@@ -1,0 +1,2 @@
+# Developer-only Xcode project inspection. Not required by build_hanjaime.command.
+openstep-parser==2.0.3

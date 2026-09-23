@@ -1,0 +1,7 @@
+# List of source files which contain translatable strings.
+
+hangul/hangulctype.c
+hangul/hangulinputcontext.c
+hangul/hangulkeyboard.c
+hangul/hanja.c
+tools/hangul.c

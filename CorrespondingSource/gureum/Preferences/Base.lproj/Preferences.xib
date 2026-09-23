@@ -1,0 +1,701 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="22154" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22154"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="GureumPreferencePane" customModule="Gureum" customModuleProvider="target">
+            <connections>
+                <outlet property="_window" destination="F0z-JX-Cv5" id="KJ8-tk-g3I"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window title="≪ do not localize ≫" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="F0z-JX-Cv5" userLabel="PrefPane">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="176" y="100" width="400" height="918"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
+            <view key="contentView" id="se5-gp-TjO">
+                <rect key="frame" x="0.0" y="0.0" width="415" height="918"/>
+                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                <subviews>
+                    <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" findBarPosition="belowContent" translatesAutoresizingMaskIntoConstraints="NO" id="6I9-vn-Dbb">
+                        <rect key="frame" x="0.0" y="0.0" width="415" height="918"/>
+                        <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="Psn-Uh-zb1">
+                            <rect key="frame" x="0.0" y="0.0" width="415" height="918"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <view translatesAutoresizingMaskIntoConstraints="NO" id="Mwx-RP-qRv">
+                                    <rect key="frame" x="0.0" y="-81" width="415" height="999"/>
+                                    <subviews>
+                                        <stackView distribution="fillEqually" orientation="vertical" alignment="leading" spacing="20" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kLe-bm-FOO">
+                                            <rect key="frame" x="20" y="16" width="375" height="967"/>
+                                            <subviews>
+                                                <stackView distribution="fill" orientation="vertical" alignment="leading" spacing="11" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="g8D-VJ-ONL">
+                                                    <rect key="frame" x="0.0" y="822" width="375" height="145"/>
+                                                    <subviews>
+                                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="a8y-l9-yXh">
+                                                            <rect key="frame" x="-2" y="129" width="90" height="16"/>
+                                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" enabled="NO" sendsActionOnEndEditing="YES" title="내부 단축키 설정" id="F6j-tJ-jrU">
+                                                                <font key="font" metaFont="systemBold"/>
+                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                            </textFieldCell>
+                                                        </textField>
+                                                        <stackView distribution="fill" orientation="vertical" alignment="leading" spacing="10" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="coV-fo-vDP">
+                                                            <rect key="frame" x="0.0" y="0.0" width="343" height="118"/>
+                                                            <subviews>
+                                                                <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="40" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UFA-Z3-oXo">
+                                                                    <rect key="frame" x="0.0" y="96" width="343" height="22"/>
+                                                                    <subviews>
+                                                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="0Hf-Gu-mlf">
+                                                                            <rect key="frame" x="-2" y="3" width="157" height="16"/>
+                                                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" enabled="NO" sendsActionOnEndEditing="YES" title="한글/로마자 바꾸기 단축키:" id="Ahu-pQ-daK">
+                                                                                <font key="font" metaFont="system"/>
+                                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                            </textFieldCell>
+                                                                        </textField>
+                                                                        <customView translatesAutoresizingMaskIntoConstraints="NO" id="XiY-Tt-T3F" customClass="MASShortcutView">
+                                                                            <rect key="frame" x="193" y="0.0" width="150" height="22"/>
+                                                                            <constraints>
+                                                                                <constraint firstAttribute="height" constant="22" id="33S-IG-6rH"/>
+                                                                                <constraint firstAttribute="width" constant="150" id="RPf-wI-A0W"/>
+                                                                            </constraints>
+                                                                        </customView>
+                                                                    </subviews>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="height" constant="22" id="QbF-5V-tbN"/>
+                                                                    </constraints>
+                                                                    <visibilityPriorities>
+                                                                        <integer value="1000"/>
+                                                                        <integer value="1000"/>
+                                                                    </visibilityPriorities>
+                                                                    <customSpacing>
+                                                                        <real value="3.4028234663852886e+38"/>
+                                                                        <real value="3.4028234663852886e+38"/>
+                                                                    </customSpacing>
+                                                                </stackView>
+                                                                <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="77" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="loW-tI-esT">
+                                                                    <rect key="frame" x="0.0" y="64" width="343" height="22"/>
+                                                                    <subviews>
+                                                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Whp-xY-Myz">
+                                                                            <rect key="frame" x="-2" y="3" width="120" height="16"/>
+                                                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" enabled="NO" sendsActionOnEndEditing="YES" title="한자 및 이모지 단축키:" id="xOE-ud-vbw">
+                                                                                <font key="font" metaFont="system"/>
+                                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                            </textFieldCell>
+                                                                        </textField>
+                                                                        <customView translatesAutoresizingMaskIntoConstraints="NO" id="H7u-hL-ncz" customClass="MASShortcutView">
+                                                                            <rect key="frame" x="193" y="0.0" width="150" height="22"/>
+                                                                            <constraints>
+                                                                                <constraint firstAttribute="width" constant="150" id="red-Et-F2U"/>
+                                                                                <constraint firstAttribute="height" constant="22" id="xak-t4-2LT"/>
+                                                                            </constraints>
+                                                                        </customView>
+                                                                    </subviews>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="height" constant="22" id="4P5-IU-a6v"/>
+                                                                    </constraints>
+                                                                    <visibilityPriorities>
+                                                                        <integer value="1000"/>
+                                                                        <integer value="1000"/>
+                                                                    </visibilityPriorities>
+                                                                    <customSpacing>
+                                                                        <real value="3.4028234663852886e+38"/>
+                                                                        <real value="3.4028234663852886e+38"/>
+                                                                    </customSpacing>
+                                                                </stackView>
+                                                                <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="29" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1a4-nq-22i">
+                                                                    <rect key="frame" x="0.0" y="32" width="343" height="22"/>
+                                                                    <subviews>
+                                                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="BnJ-87-FKK">
+                                                                            <rect key="frame" x="-2" y="3" width="168" height="16"/>
+                                                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" enabled="NO" sendsActionOnEndEditing="YES" title="로마자로만 바꾸기 단축키:" id="Lqo-2U-8gt">
+                                                                                <font key="font" metaFont="system"/>
+                                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                            </textFieldCell>
+                                                                        </textField>
+                                                                        <customView translatesAutoresizingMaskIntoConstraints="NO" id="fCD-Cp-FQV" customClass="MASShortcutView">
+                                                                            <rect key="frame" x="193" y="0.0" width="150" height="22"/>
+                                                                            <constraints>
+                                                                                <constraint firstAttribute="height" constant="22" id="lj8-e3-oz2"/>
+                                                                                <constraint firstAttribute="width" constant="150" id="sCI-eM-pKc"/>
+                                                                            </constraints>
+                                                                        </customView>
+                                                                    </subviews>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="height" constant="22" id="dUH-dr-ayJ"/>
+                                                                    </constraints>
+                                                                    <visibilityPriorities>
+                                                                        <integer value="1000"/>
+                                                                        <integer value="1000"/>
+                                                                    </visibilityPriorities>
+                                                                    <customSpacing>
+                                                                        <real value="3.4028234663852886e+38"/>
+                                                                        <real value="3.4028234663852886e+38"/>
+                                                                    </customSpacing>
+                                                                </stackView>
+                                                                <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="18" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CcL-09-IxA">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="343" height="22"/>
+                                                                    <subviews>
+                                                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="BHm-Gy-NR7" userLabel="한글로 바꾸기 단축키:">
+                                                                            <rect key="frame" x="-2" y="3" width="179" height="16"/>
+                                                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" enabled="NO" sendsActionOnEndEditing="YES" title="한글로만 바꾸기 단축키:" id="TQ3-aV-8d6" userLabel="한글로 바꾸기 단축키:">
+                                                                                <font key="font" metaFont="system"/>
+                                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                            </textFieldCell>
+                                                                        </textField>
+                                                                        <customView translatesAutoresizingMaskIntoConstraints="NO" id="ZkS-XC-ybl" customClass="MASShortcutView">
+                                                                            <rect key="frame" x="193" y="0.0" width="150" height="22"/>
+                                                                            <constraints>
+                                                                                <constraint firstAttribute="height" constant="22" id="UvI-vJ-gJa"/>
+                                                                                <constraint firstAttribute="width" constant="150" id="uwV-7f-e2L"/>
+                                                                            </constraints>
+                                                                        </customView>
+                                                                    </subviews>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="height" constant="22" id="QfN-Dk-1G3"/>
+                                                                    </constraints>
+                                                                    <visibilityPriorities>
+                                                                        <integer value="1000"/>
+                                                                        <integer value="1000"/>
+                                                                    </visibilityPriorities>
+                                                                    <customSpacing>
+                                                                        <real value="3.4028234663852886e+38"/>
+                                                                        <real value="3.4028234663852886e+38"/>
+                                                                    </customSpacing>
+                                                                </stackView>
+                                                            </subviews>
+                                                            <constraints>
+                                                                <constraint firstAttribute="trailing" secondItem="UFA-Z3-oXo" secondAttribute="trailing" id="CbW-O2-uhl"/>
+                                                                <constraint firstItem="UFA-Z3-oXo" firstAttribute="leading" secondItem="coV-fo-vDP" secondAttribute="leading" id="Df7-oY-6dg"/>
+                                                                <constraint firstItem="loW-tI-esT" firstAttribute="leading" secondItem="coV-fo-vDP" secondAttribute="leading" id="E55-26-3tA"/>
+                                                                <constraint firstItem="1a4-nq-22i" firstAttribute="leading" secondItem="coV-fo-vDP" secondAttribute="leading" id="Wd8-pN-xbm"/>
+                                                                <constraint firstAttribute="trailing" secondItem="1a4-nq-22i" secondAttribute="trailing" id="b0f-uQ-h6Q"/>
+                                                                <constraint firstAttribute="trailing" secondItem="loW-tI-esT" secondAttribute="trailing" id="efG-0g-qus"/>
+                                                                <constraint firstItem="CcL-09-IxA" firstAttribute="leading" secondItem="coV-fo-vDP" secondAttribute="leading" id="gy3-ok-zCH"/>
+                                                                <constraint firstAttribute="trailing" secondItem="CcL-09-IxA" secondAttribute="trailing" id="iCY-uO-7bQ"/>
+                                                            </constraints>
+                                                            <visibilityPriorities>
+                                                                <integer value="1000"/>
+                                                                <integer value="1000"/>
+                                                                <integer value="1000"/>
+                                                                <integer value="1000"/>
+                                                            </visibilityPriorities>
+                                                            <customSpacing>
+                                                                <real value="3.4028234663852886e+38"/>
+                                                                <real value="3.4028234663852886e+38"/>
+                                                                <real value="3.4028234663852886e+38"/>
+                                                                <real value="3.4028234663852886e+38"/>
+                                                            </customSpacing>
+                                                        </stackView>
+                                                    </subviews>
+                                                    <visibilityPriorities>
+                                                        <integer value="1000"/>
+                                                        <integer value="1000"/>
+                                                    </visibilityPriorities>
+                                                    <customSpacing>
+                                                        <real value="3.4028234663852886e+38"/>
+                                                        <real value="3.4028234663852886e+38"/>
+                                                    </customSpacing>
+                                                </stackView>
+                                                <stackView distribution="fill" orientation="vertical" alignment="leading" spacing="11" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4Td-o5-z1h">
+                                                    <rect key="frame" x="0.0" y="405" width="375" height="397"/>
+                                                    <subviews>
+                                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="DRr-ZG-wMG">
+                                                            <rect key="frame" x="-2" y="381" width="101" height="16"/>
+                                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" enabled="NO" sendsActionOnEndEditing="YES" title="시스템 단축키 설정" id="45X-EX-BbZ">
+                                                                <font key="font" metaFont="systemBold"/>
+                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                            </textFieldCell>
+                                                        </textField>
+                                                        <textField verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kC8-kH-2z7" userLabel="단축키 설정 설명">
+                                                            <rect key="frame" x="-2" y="274" width="369" height="96"/>
+                                                            <textFieldCell key="cell" enabled="NO" allowsUndo="NO" sendsActionOnEndEditing="YES" id="Ndr-tA-evW">
+                                                                <font key="font" metaFont="system"/>
+                                                                <string key="title">맥 내장 입력기와 마찬가지로 Caps Lock으로 언어 전환을 하거나,
+PC처럼 오른쪽 커맨드 또는 옵션 키 등으로 언어 전환을 할 수 있습니다.
+
+오른쪽 키로 언어 전환을 하려면 &lt;시스템 환경설정 → 보안 및
+개인 정보 보호 → 개인 정보 보호 → 입력 모니터링&gt;에서
+&lt;구름 입력기&gt; 설정을 켜주세요.</string>
+                                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                            </textFieldCell>
+                                                        </textField>
+                                                        <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="80" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SYs-9w-bvA">
+                                                            <rect key="frame" x="0.0" y="243" width="306" height="20"/>
+                                                            <subviews>
+                                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zdz-kF-GPl">
+                                                                    <rect key="frame" x="-2" y="2" width="120" height="16"/>
+                                                                    <textFieldCell key="cell" lineBreakMode="clipping" title="오른쪽 키로 언어 전환:" id="myQ-yv-6PZ">
+                                                                        <font key="font" usesAppearanceFont="YES"/>
+                                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                    </textFieldCell>
+                                                                </textField>
+                                                                <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="O2x-rR-7JO">
+                                                                    <rect key="frame" x="193" y="-4" width="117" height="25"/>
+                                                                    <popUpButtonCell key="cell" type="push" title="하지 않음" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="gpa-BJ-0Mf" id="ZdG-zP-BO7">
+                                                                        <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                                        <font key="font" metaFont="menu"/>
+                                                                        <menu key="menu" id="Ft9-Ec-IoD">
+                                                                            <items>
+                                                                                <menuItem title="하지 않음" state="on" id="gpa-BJ-0Mf">
+                                                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                                                </menuItem>
+                                                                                <menuItem title="⌘ Command" id="SsR-ab-evp"/>
+                                                                                <menuItem title="⌥ Option" id="9vh-Qo-MRc">
+                                                                                    <modifierMask key="keyEquivalentModifierMask" option="YES"/>
+                                                                                </menuItem>
+                                                                                <menuItem title="⌃ Control" id="MKU-NP-Xzr">
+                                                                                    <modifierMask key="keyEquivalentModifierMask" control="YES"/>
+                                                                                </menuItem>
+                                                                            </items>
+                                                                        </menu>
+                                                                    </popUpButtonCell>
+                                                                    <connections>
+                                                                        <action selector="rightToggleKeyValueChanged:" target="DMm-2g-KCR" id="OVm-jb-sdZ"/>
+                                                                    </connections>
+                                                                </popUpButton>
+                                                            </subviews>
+                                                            <visibilityPriorities>
+                                                                <integer value="1000"/>
+                                                                <integer value="1000"/>
+                                                            </visibilityPriorities>
+                                                            <customSpacing>
+                                                                <real value="3.4028234663852886e+38"/>
+                                                                <real value="3.4028234663852886e+38"/>
+                                                            </customSpacing>
+                                                        </stackView>
+                                                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="up6-aF-gPR">
+                                                            <rect key="frame" x="-7" y="205" width="203" height="32"/>
+                                                            <buttonCell key="cell" type="push" title="입력 모니터링 설정하러 이동하기" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="hfm-ub-tBd">
+                                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                <font key="font" metaFont="system"/>
+                                                            </buttonCell>
+                                                            <connections>
+                                                                <action selector="openInputMonitoringPreferenceWithSender:" target="DMm-2g-KCR" id="1MP-NR-r0J"/>
+                                                            </connections>
+                                                        </button>
+                                                        <textField verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M08-TU-Mtg" userLabel="단축키 설정 설명">
+                                                            <rect key="frame" x="-2" y="153" width="368" height="48"/>
+                                                            <textFieldCell key="cell" enabled="NO" allowsUndo="NO" sendsActionOnEndEditing="YES" id="hoy-bb-wPo">
+                                                                <font key="font" metaFont="system"/>
+                                                                <string key="title">Caps Lock을 사용하려면 &lt;시스템 환경설정 → 키보드 → 입력
+소스&gt;에서 &lt;Caps Lock 키로 마지막으로 사용한 라틴 입력 소스 전환&gt;
+설정을 켜주세요.</string>
+                                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                            </textFieldCell>
+                                                        </textField>
+                                                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="N4p-Iu-NjD">
+                                                            <rect key="frame" x="-7" y="115" width="165" height="32"/>
+                                                            <buttonCell key="cell" type="push" title="키보드 설정하러 이동하기" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="t0Y-xg-dcU">
+                                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                <font key="font" metaFont="system"/>
+                                                            </buttonCell>
+                                                            <connections>
+                                                                <action selector="openKeyboardInputSourcesPreferenceWithSender:" target="DMm-2g-KCR" id="chs-d6-2SE"/>
+                                                            </connections>
+                                                        </button>
+                                                        <textField verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ogf-Zd-3HE" userLabel="단축키 설정 설명">
+                                                            <rect key="frame" x="-2" y="31" width="350" height="80"/>
+                                                            <textFieldCell key="cell" enabled="NO" allowsUndo="NO" sendsActionOnEndEditing="YES" id="Cbq-10-2mL">
+                                                                <font key="font" metaFont="system"/>
+                                                                <string key="title">구름에서 제공하는 단축키 대신 시스템 단축키를 지정해 자판을
+전환할 수도 있습니다.
+&lt;시스템 환경설정 → 키보드 → 단축키 → 입력 소스&gt;에서 설정하며,
+⇧스페이스와 같이 ⇧가 포함된 단축키로 설정하려면 Fn 키와 함께
+눌러주세요. (예: Fn+⇧+스페이스)</string>
+                                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                            </textFieldCell>
+                                                        </textField>
+                                                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="tMq-UC-GBP">
+                                                            <rect key="frame" x="-7" y="-7" width="165" height="32"/>
+                                                            <buttonCell key="cell" type="push" title="키보드 설정하러 이동하기" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="OPL-eq-ykB">
+                                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                <font key="font" metaFont="system"/>
+                                                            </buttonCell>
+                                                            <connections>
+                                                                <action selector="openKeyboardShortcutsPreferenceWithSender:" target="DMm-2g-KCR" id="Po7-lt-mKd"/>
+                                                            </connections>
+                                                        </button>
+                                                    </subviews>
+                                                    <visibilityPriorities>
+                                                        <integer value="1000"/>
+                                                        <integer value="1000"/>
+                                                        <integer value="1000"/>
+                                                        <integer value="1000"/>
+                                                        <integer value="1000"/>
+                                                        <integer value="1000"/>
+                                                        <integer value="1000"/>
+                                                        <integer value="1000"/>
+                                                    </visibilityPriorities>
+                                                    <customSpacing>
+                                                        <real value="3.4028234663852886e+38"/>
+                                                        <real value="3.4028234663852886e+38"/>
+                                                        <real value="3.4028234663852886e+38"/>
+                                                        <real value="3.4028234663852886e+38"/>
+                                                        <real value="3.4028234663852886e+38"/>
+                                                        <real value="3.4028234663852886e+38"/>
+                                                        <real value="3.4028234663852886e+38"/>
+                                                        <real value="3.4028234663852886e+38"/>
+                                                    </customSpacing>
+                                                </stackView>
+                                                <stackView distribution="fill" orientation="vertical" alignment="leading" spacing="11" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zYw-Lc-Fgh">
+                                                    <rect key="frame" x="0.0" y="311" width="327" height="74"/>
+                                                    <subviews>
+                                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="dCm-f8-tKJ">
+                                                            <rect key="frame" x="-2" y="58" width="101" height="16"/>
+                                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" enabled="NO" sendsActionOnEndEditing="YES" title="로마자 입력기 설정" id="1kr-cl-A2e">
+                                                                <font key="font" metaFont="systemBold"/>
+                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                            </textFieldCell>
+                                                        </textField>
+                                                        <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="80" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Vwy-Ul-fDb">
+                                                            <rect key="frame" x="0.0" y="27" width="327" height="20"/>
+                                                            <subviews>
+                                                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="TKK-is-ROX">
+                                                                    <rect key="frame" x="-2" y="2" width="91" height="16"/>
+                                                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="키보드 레이아웃:" id="fcn-6t-Jdv">
+                                                                        <font key="font" metaFont="system"/>
+                                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                    </textFieldCell>
+                                                                </textField>
+                                                                <comboBox verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="crR-nL-R9N" userLabel="기본 키보드 레이아웃 Combo Box">
+                                                                    <rect key="frame" x="166" y="-2" width="164" height="23"/>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="width" constant="160" id="G3O-6L-dgF"/>
+                                                                        <constraint firstAttribute="height" constant="20" id="igh-sw-xvN"/>
+                                                                    </constraints>
+                                                                    <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" usesDataSource="YES" numberOfVisibleItems="5" id="djp-BV-Tu6">
+                                                                        <font key="font" metaFont="system"/>
+                                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                    </comboBoxCell>
+                                                                    <connections>
+                                                                        <action selector="overridingKeyboardNameComboBoxValueChanged:" target="DMm-2g-KCR" id="Quw-RG-GBZ"/>
+                                                                        <outlet property="dataSource" destination="DMm-2g-KCR" id="Dxx-qj-8vZ"/>
+                                                                    </connections>
+                                                                </comboBox>
+                                                            </subviews>
+                                                            <constraints>
+                                                                <constraint firstAttribute="bottom" secondItem="crR-nL-R9N" secondAttribute="bottom" id="FMb-gA-XC1"/>
+                                                                <constraint firstItem="crR-nL-R9N" firstAttribute="top" secondItem="Vwy-Ul-fDb" secondAttribute="top" id="nXF-Ei-ROV"/>
+                                                            </constraints>
+                                                            <visibilityPriorities>
+                                                                <integer value="1000"/>
+                                                                <integer value="1000"/>
+                                                            </visibilityPriorities>
+                                                            <customSpacing>
+                                                                <real value="3.4028234663852886e+38"/>
+                                                                <real value="3.4028234663852886e+38"/>
+                                                            </customSpacing>
+                                                        </stackView>
+                                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="phv-uO-218">
+                                                            <rect key="frame" x="-2" y="0.0" width="323" height="16"/>
+                                                            <textFieldCell key="cell" lineBreakMode="clipping" title="&quot;로마자&quot; 입력기와 한글 입력기 단축키 양쪽에 모두 적용됩니다" id="1yh-7K-4cy">
+                                                                <font key="font" usesAppearanceFont="YES"/>
+                                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                            </textFieldCell>
+                                                        </textField>
+                                                    </subviews>
+                                                    <visibilityPriorities>
+                                                        <integer value="1000"/>
+                                                        <integer value="1000"/>
+                                                        <integer value="1000"/>
+                                                    </visibilityPriorities>
+                                                    <customSpacing>
+                                                        <real value="3.4028234663852886e+38"/>
+                                                        <real value="3.4028234663852886e+38"/>
+                                                        <real value="3.4028234663852886e+38"/>
+                                                    </customSpacing>
+                                                </stackView>
+                                                <stackView distribution="fill" orientation="vertical" alignment="leading" spacing="11" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zbm-lz-J9a">
+                                                    <rect key="frame" x="0.0" y="84" width="307" height="207"/>
+                                                    <subviews>
+                                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="yjR-ur-FpL">
+                                                            <rect key="frame" x="-2" y="191" width="90" height="16"/>
+                                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" enabled="NO" sendsActionOnEndEditing="YES" title="한글 입력기 설정" id="HIp-u9-CIf">
+                                                                <font key="font" metaFont="systemBold"/>
+                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                            </textFieldCell>
+                                                        </textField>
+                                                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JYx-Sc-lao">
+                                                            <rect key="frame" x="-2" y="163" width="288" height="18"/>
+                                                            <buttonCell key="cell" type="check" title="한글 입력기일 때 역따옴표(`)로 원화 기호(₩) 입력" bezelStyle="regularSquare" imagePosition="left" inset="2" id="2iT-lY-Scx" userLabel="한글 입력기일 때 역따옴표(`)로 원화 기호(₩) 입력">
+                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                <font key="font" metaFont="system"/>
+                                                            </buttonCell>
+                                                            <connections>
+                                                                <action selector="hangulWonCurrencySymbolForBackQuoteValueChanged:" target="DMm-2g-KCR" id="795-Vy-9xg"/>
+                                                            </connections>
+                                                        </button>
+                                                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="DXg-Ha-7zY">
+                                                            <rect key="frame" x="-2" y="136" width="234" height="18"/>
+                                                            <buttonCell key="cell" type="check" title="완성되지 않은 낱자 자동 교정 (모아치기)" bezelStyle="regularSquare" imagePosition="left" inset="2" id="HZu-6J-gbz">
+                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                <font key="font" metaFont="system"/>
+                                                            </buttonCell>
+                                                            <connections>
+                                                                <action selector="hangulAutoReorderValueChanged:" target="DMm-2g-KCR" id="TTP-oX-N80"/>
+                                                            </connections>
+                                                        </button>
+                                                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="AHr-Ou-hBi">
+                                                            <rect key="frame" x="-2" y="109" width="309" height="18"/>
+                                                            <buttonCell key="cell" type="check" title="두벌식 초성 조합 중에도 종성 결합 허용 (MS윈도 호환)" bezelStyle="regularSquare" imagePosition="left" inset="2" id="Phf-eg-t0A">
+                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                <font key="font" metaFont="system"/>
+                                                            </buttonCell>
+                                                            <connections>
+                                                                <action selector="hangulNonChoseongCombinationValueChanged:" target="DMm-2g-KCR" id="RYe-GQ-ycc"/>
+                                                            </connections>
+                                                        </button>
+                                                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="f9c-IQ-QKY">
+                                                            <rect key="frame" x="-2" y="83" width="257" height="18"/>
+                                                            <buttonCell key="cell" type="check" title="모든 글자를 조합중인 글자로 취급 (JDK 호환)" bezelStyle="regularSquare" imagePosition="left" inset="2" id="J0M-iD-R8Y">
+                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                <font key="font" metaFont="system"/>
+                                                            </buttonCell>
+                                                            <connections>
+                                                                <action selector="hangulDeferredSymbolCommitValueChanged:" target="DMm-2g-KCR" id="QTw-vh-Z6k"/>
+                                                            </connections>
+                                                        </button>
+                                                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JOz-3z-VAl" userLabel="Strict Combination">
+                                                            <rect key="frame" x="-2" y="57" width="112" height="18"/>
+                                                            <buttonCell key="cell" type="check" title="세벌식 정석 강요" bezelStyle="regularSquare" imagePosition="left" inset="2" id="cQP-uo-ggW" userLabel="세벌식 종성 결합 허용하지 않음">
+                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                <font key="font" metaFont="system"/>
+                                                            </buttonCell>
+                                                            <connections>
+                                                                <action selector="hangulForceStrictCombinationRuleValueChanged:" target="DMm-2g-KCR" id="59K-Of-diH"/>
+                                                            </connections>
+                                                        </button>
+                                                        <button translatesAutoresizingMaskIntoConstraints="NO" id="Wjk-Ru-yFr">
+                                                            <rect key="frame" x="-2" y="30" width="236" height="18"/>
+                                                            <buttonCell key="cell" type="check" title="Esc 키로 로마자 자판으로 전환 (vi 모드)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="oYM-mR-7hZ">
+                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                <font key="font" metaFont="system"/>
+                                                            </buttonCell>
+                                                            <connections>
+                                                                <action selector="romanModeByEscapeKeyValueChanged:" target="DMm-2g-KCR" id="CNF-QS-ke4"/>
+                                                            </connections>
+                                                        </button>
+                                                        <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="80" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4dQ-Ty-1Es">
+                                                            <rect key="frame" x="0.0" y="0.0" width="307" height="20"/>
+                                                            <subviews>
+                                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="YGK-Vi-f1X">
+                                                                    <rect key="frame" x="-2" y="2" width="110" height="16"/>
+                                                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="⌥(option) 키 동작:" id="jWu-1H-vJQ">
+                                                                        <font key="font" metaFont="system"/>
+                                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                    </textFieldCell>
+                                                                </textField>
+                                                                <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="EaM-Q7-ATG" userLabel="option 키 동작">
+                                                                    <rect key="frame" x="183" y="-4" width="128" height="25"/>
+                                                                    <popUpButtonCell key="cell" type="push" title="기본 특수 문자" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="FE5-DM-KYV" id="hhB-K0-qj7" userLabel="option 키 동작">
+                                                                        <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                                        <font key="font" metaFont="menu"/>
+                                                                        <menu key="menu" id="TvA-lm-MvE">
+                                                                            <items>
+                                                                                <menuItem title="기본 특수 문자" state="on" id="FE5-DM-KYV"/>
+                                                                                <menuItem title="로마자" id="NpE-Q1-rJd"/>
+                                                                            </items>
+                                                                        </menu>
+                                                                    </popUpButtonCell>
+                                                                    <connections>
+                                                                        <action selector="optionKeyBehaviorValueChanged:" target="DMm-2g-KCR" id="rU7-6N-ekl"/>
+                                                                    </connections>
+                                                                </popUpButton>
+                                                            </subviews>
+                                                            <visibilityPriorities>
+                                                                <integer value="1000"/>
+                                                                <integer value="1000"/>
+                                                            </visibilityPriorities>
+                                                            <customSpacing>
+                                                                <real value="3.4028234663852886e+38"/>
+                                                                <real value="3.4028234663852886e+38"/>
+                                                            </customSpacing>
+                                                        </stackView>
+                                                    </subviews>
+                                                    <constraints>
+                                                        <constraint firstAttribute="trailing" secondItem="4dQ-Ty-1Es" secondAttribute="trailing" id="EGt-hS-keK"/>
+                                                    </constraints>
+                                                    <visibilityPriorities>
+                                                        <integer value="1000"/>
+                                                        <integer value="1000"/>
+                                                        <integer value="1000"/>
+                                                        <integer value="1000"/>
+                                                        <integer value="1000"/>
+                                                        <integer value="1000"/>
+                                                        <integer value="1000"/>
+                                                        <integer value="1000"/>
+                                                    </visibilityPriorities>
+                                                    <customSpacing>
+                                                        <real value="3.4028234663852886e+38"/>
+                                                        <real value="3.4028234663852886e+38"/>
+                                                        <real value="3.4028234663852886e+38"/>
+                                                        <real value="3.4028234663852886e+38"/>
+                                                        <real value="3.4028234663852886e+38"/>
+                                                        <real value="3.4028234663852886e+38"/>
+                                                        <real value="3.4028234663852886e+38"/>
+                                                        <real value="3.4028234663852886e+38"/>
+                                                    </customSpacing>
+                                                </stackView>
+                                                <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="epY-p9-ex8">
+                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="64"/>
+                                                    <subviews>
+                                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="UPK-Nf-1O5">
+                                                            <rect key="frame" x="-2" y="48" width="75" height="16"/>
+                                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" enabled="NO" sendsActionOnEndEditing="YES" title="업데이트 설정" id="nWa-hO-Ybq">
+                                                                <font key="font" metaFont="systemBold"/>
+                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                            </textFieldCell>
+                                                        </textField>
+                                                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="TrR-dR-6Bo">
+                                                            <rect key="frame" x="-2" y="23" width="377" height="18"/>
+                                                            <buttonCell key="cell" type="check" title="업데이트 알림을 받겠습니다" bezelStyle="regularSquare" imagePosition="left" inset="2" id="qth-k4-ZDz">
+                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                <font key="font" metaFont="system"/>
+                                                            </buttonCell>
+                                                            <connections>
+                                                                <action selector="updateNotificationValueChanged:" target="DMm-2g-KCR" id="abt-Wm-e8H"/>
+                                                            </connections>
+                                                        </button>
+                                                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Qtg-ji-dS0">
+                                                            <rect key="frame" x="18" y="-1" width="321" height="18"/>
+                                                            <buttonCell key="cell" type="check" title="실험 버전이 있으면 실험 버전 업데이트 알림을 받겠습니다" bezelStyle="regularSquare" imagePosition="left" inset="2" id="76s-8b-LUT">
+                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                <font key="font" metaFont="system"/>
+                                                            </buttonCell>
+                                                            <connections>
+                                                                <action selector="updateNotificationExperimentalValueChanged:" target="DMm-2g-KCR" id="JdX-C1-HIf"/>
+                                                            </connections>
+                                                        </button>
+                                                    </subviews>
+                                                    <constraints>
+                                                        <constraint firstItem="TrR-dR-6Bo" firstAttribute="leading" secondItem="epY-p9-ex8" secondAttribute="leading" id="dml-AL-b43"/>
+                                                        <constraint firstItem="Qtg-ji-dS0" firstAttribute="leading" secondItem="epY-p9-ex8" secondAttribute="leading" constant="20" id="mAR-z3-eFN"/>
+                                                        <constraint firstAttribute="trailing" secondItem="TrR-dR-6Bo" secondAttribute="trailing" id="or3-eb-as8"/>
+                                                    </constraints>
+                                                    <visibilityPriorities>
+                                                        <integer value="1000"/>
+                                                        <integer value="1000"/>
+                                                        <integer value="1000"/>
+                                                    </visibilityPriorities>
+                                                    <customSpacing>
+                                                        <real value="3.4028234663852886e+38"/>
+                                                        <real value="3.4028234663852886e+38"/>
+                                                        <real value="3.4028234663852886e+38"/>
+                                                    </customSpacing>
+                                                </stackView>
+                                                <button hidden="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1p7-M2-qsA">
+                                                    <rect key="frame" x="-7" y="940" width="83" height="32"/>
+                                                    <buttonCell key="cell" type="push" title="DEBUG!" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="sGP-Ih-dUD">
+                                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                        <font key="font" metaFont="system"/>
+                                                    </buttonCell>
+                                                    <connections>
+                                                        <action selector="debugWithSender:" target="DMm-2g-KCR" id="cXb-Mg-QiM"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="4Td-o5-z1h" secondAttribute="trailing" id="GBc-YF-UIw"/>
+                                                <constraint firstItem="4Td-o5-z1h" firstAttribute="leading" secondItem="kLe-bm-FOO" secondAttribute="leading" id="OyA-BU-LK4"/>
+                                                <constraint firstItem="g8D-VJ-ONL" firstAttribute="leading" secondItem="kLe-bm-FOO" secondAttribute="leading" id="i5S-4f-sTC"/>
+                                                <constraint firstAttribute="trailing" secondItem="epY-p9-ex8" secondAttribute="trailing" id="jG0-Rc-8Fn"/>
+                                                <constraint firstAttribute="trailing" secondItem="g8D-VJ-ONL" secondAttribute="trailing" id="nHm-K5-7II"/>
+                                            </constraints>
+                                            <visibilityPriorities>
+                                                <integer value="1000"/>
+                                                <integer value="1000"/>
+                                                <integer value="1000"/>
+                                                <integer value="1000"/>
+                                                <integer value="1000"/>
+                                                <integer value="1000"/>
+                                            </visibilityPriorities>
+                                            <customSpacing>
+                                                <real value="3.4028234663852886e+38"/>
+                                                <real value="3.4028234663852886e+38"/>
+                                                <real value="3.4028234663852886e+38"/>
+                                                <real value="3.4028234663852886e+38"/>
+                                                <real value="3.4028234663852886e+38"/>
+                                                <real value="3.4028234663852886e+38"/>
+                                            </customSpacing>
+                                        </stackView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="kLe-bm-FOO" firstAttribute="top" secondItem="Mwx-RP-qRv" secondAttribute="top" constant="16" id="3KM-KD-3cb"/>
+                                        <constraint firstAttribute="trailing" secondItem="kLe-bm-FOO" secondAttribute="trailing" constant="20" id="IjM-n5-pgz"/>
+                                        <constraint firstAttribute="width" constant="415" id="Ock-7H-gmT"/>
+                                        <constraint firstAttribute="bottom" secondItem="kLe-bm-FOO" secondAttribute="bottom" constant="16" id="XDs-hP-iPT"/>
+                                        <constraint firstItem="kLe-bm-FOO" firstAttribute="leading" secondItem="Mwx-RP-qRv" secondAttribute="leading" constant="20" id="gae-MH-OpF"/>
+                                    </constraints>
+                                </view>
+                            </subviews>
+                            <constraints>
+                                <constraint firstAttribute="trailing" secondItem="Mwx-RP-qRv" secondAttribute="trailing" id="TQh-R0-eaN"/>
+                                <constraint firstItem="Mwx-RP-qRv" firstAttribute="top" secondItem="Psn-Uh-zb1" secondAttribute="top" id="U1k-lP-oJz"/>
+                                <constraint firstItem="Mwx-RP-qRv" firstAttribute="leading" secondItem="Psn-Uh-zb1" secondAttribute="leading" id="t9u-wY-Zxh"/>
+                            </constraints>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </clipView>
+                        <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="Kcx-Qf-mei">
+                            <rect key="frame" x="0.0" y="903" width="414" height="15"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                        <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="0.69135802469135799" horizontal="NO" id="E1U-9N-bFJ">
+                            <rect key="frame" x="399" y="0.0" width="16" height="918"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                    </scrollView>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="6I9-vn-Dbb" secondAttribute="bottom" id="APl-e6-Nl9"/>
+                    <constraint firstItem="6I9-vn-Dbb" firstAttribute="top" secondItem="se5-gp-TjO" secondAttribute="top" id="IKE-wy-D9T"/>
+                    <constraint firstItem="6I9-vn-Dbb" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" id="XLv-FF-5lx"/>
+                    <constraint firstAttribute="trailing" secondItem="6I9-vn-Dbb" secondAttribute="trailing" id="pzZ-Tm-ISk"/>
+                </constraints>
+            </view>
+            <point key="canvasLocation" x="-214.5" y="193"/>
+        </window>
+        <customObject id="DMm-2g-KCR" customClass="PreferenceViewController">
+            <connections>
+                <outlet property="debugButton" destination="1p7-M2-qsA" id="YQp-QQ-dbE"/>
+                <outlet property="hangulAutoReorderButton" destination="DXg-Ha-7zY" id="3qx-dc-nRf"/>
+                <outlet property="hangulDeferredSymbolCommitButton" destination="f9c-IQ-QKY" id="DnX-Jm-kHp"/>
+                <outlet property="hangulForceStrictCombinationRuleButton" destination="JOz-3z-VAl" id="9Gi-l9-DbM"/>
+                <outlet property="hangulNonChoseongCombinationButton" destination="AHr-Ou-hBi" id="A1C-aF-9IN"/>
+                <outlet property="hangulWonCurrencySymbolForBackQuoteButton" destination="JYx-Sc-lao" id="5Kn-cE-sMA"/>
+                <outlet property="inputModeEnglishShortcutView" destination="fCD-Cp-FQV" id="i8N-tR-KEH"/>
+                <outlet property="inputModeExchangeShortcutView" destination="XiY-Tt-T3F" id="LGg-vP-YF5"/>
+                <outlet property="inputModeKoreanShortcutView" destination="ZkS-XC-ybl" id="YTt-oL-VCC"/>
+                <outlet property="inputModeSearchShortcutView" destination="H7u-hL-ncz" id="31Z-g1-m5g"/>
+                <outlet property="optionKeyBehaviorButton" destination="EaM-Q7-ATG" id="5uS-N2-0Kt"/>
+                <outlet property="overridingKeyboardNameComboBox" destination="djp-BV-Tu6" id="zKK-rV-G9N"/>
+                <outlet property="rightToggleKeyButton" destination="O2x-rR-7JO" id="QxE-Xf-9nc"/>
+                <outlet property="romanModeByEscapeKeyButton" destination="oYM-mR-7hZ" id="RSA-NS-Kza"/>
+                <outlet property="updateNotificationButton" destination="TrR-dR-6Bo" id="PIM-J6-iux"/>
+                <outlet property="updateNotificationExperimentalButton" destination="Qtg-ji-dS0" id="brm-A8-IV4"/>
+                <outlet property="view" destination="se5-gp-TjO" id="x0B-I2-MHL"/>
+            </connections>
+        </customObject>
+    </objects>
+</document>

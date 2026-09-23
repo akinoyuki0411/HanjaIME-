@@ -1,0 +1,9 @@
+"ShortcutBehaviorNone" = "동작 없음";
+"ShortcutBehaviorExchangeLanguage" = "언어 전환";
+"ShortcutBehaviorHanjaMode" = "한자 입력";
+"ShortcutBehaviorChangeToEnglish" = "영어로 전환";
+"ShortcutBehaviorChangeToKorean" = "한국어로 전환";
+
+"OptionKeyDefault" = "기본 특수 문자";
+"OptionKeyIgnore" = "Option 키 무시";
+"OptionKeyQwerty" = "Qwerty 입력";

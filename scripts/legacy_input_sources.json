@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "bundle_id": "org.hanjaime.inputmethod.HanjaIME",
+  "current_source_id": "org.hanjaime.inputmethod.HanjaIME.han2",
+  "display_name": "HanjaIME 두벌식",
+  "provenance": "Exact raw values in KoreanOnlyFix2 Sources/GureumComposer.swift, GureumInputSource. No Hanjimi IDs have been observed in this source. Han 2set is a display name, never a deletion key. The canonical han2 ID is deliberately excluded even if its cached name is old.",
+  "legacy_source_ids": [
+    "org.hanjaime.inputmethod.HanjaIME.system",
+    "org.hanjaime.inputmethod.HanjaIME.qwerty",
+    "org.hanjaime.inputmethod.HanjaIME.dvorak",
+    "org.hanjaime.inputmethod.HanjaIME.colemak",
+    "org.hanjaime.inputmethod.HanjaIME.han2classic",
+    "org.hanjaime.inputmethod.HanjaIME.han3final",
+    "org.hanjaime.inputmethod.HanjaIME.han390",
+    "org.hanjaime.inputmethod.HanjaIME.han3noshift",
+    "org.hanjaime.inputmethod.HanjaIME.han3classic",
+    "org.hanjaime.inputmethod.HanjaIME.han3layout2",
+    "org.hanjaime.inputmethod.HanjaIME.hanahnmatae",
+    "org.hanjaime.inputmethod.HanjaIME.hanroman",
+    "org.hanjaime.inputmethod.HanjaIME.han3finalnoshift",
+    "org.hanjaime.inputmethod.HanjaIME.han3-2011",
+    "org.hanjaime.inputmethod.HanjaIME.han3-2012"
+  ]
+}

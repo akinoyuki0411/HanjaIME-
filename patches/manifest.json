@@ -1,0 +1,311 @@
+{
+  "base_commit": "5bdc5dc3df93d5a3aa61ad1df928d76bc903054b",
+  "patch_sha256": "ef6b3d3c1dadd450ff99a1ce8bf731b3993a5a47a03f44e6baae60f8ce72098f",
+  "files": [
+    {
+      "path": "Gureum.xcodeproj/project.pbxproj",
+      "before": "b8a730e430a6138e493665bbe3f8af381c045579bd6977285a2887b5ffca1d91",
+      "after": "a929d3d52891c811162a7f5b3971353655445dc488d7a7ae831954561c0707b4"
+    },
+    {
+      "path": "Gureum.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+      "before": null,
+      "after": "cc15336216355469c3be5eb9d66df0a12f54ab455921f4e75be270891527a3e4"
+    },
+    {
+      "path": "Gureum.xcodeproj/xcshareddata/xcschemes/HanjaIME.xcscheme",
+      "before": null,
+      "after": "ff9dfca9fa80042b479672ed09b4f7c87e8209354c70518e4bf418161110204b"
+    },
+    {
+      "path": "GureumTests/HanjaIMEIntegrationTests.swift",
+      "before": null,
+      "after": "cc920b5278c0e42164d60c2719d61423030a2b9b74b30c6f834df92d2cf66f3c"
+    },
+    {
+      "path": "GureumTests/MockInputClient.h",
+      "before": "848cada6598798460c3367fb4971923ebfd5868bdde554a3b58d45658bd5681b",
+      "after": "9237fae44c5bca38108f6ca93f2b8f4ba17b7a57ebe2258d91b6ab83b63236ba"
+    },
+    {
+      "path": "GureumTests/MockInputClient.m",
+      "before": "0bce695c7cae2b42b83cdf8622c96e13ba5b969bd0541288d17d0c7abec608b4",
+      "after": "8c607447791cb0e1fb7cd0cda99bc48cbc9b2ff048d83796730d161310a3b11c"
+    },
+    {
+      "path": "OSX/Assets.xcassets/AppIcon.appiconset/icon_128x128.png",
+      "before": "9538953c6ae68c5f84589f1413cb32f1f7a0ba7844ecb8b8d0db31971039051d",
+      "after": "97ef25732121f9c919c548a937cccc69a63a77e1aa9b1bdce2f0e457fa1250d5"
+    },
+    {
+      "path": "OSX/Assets.xcassets/AppIcon.appiconset/icon_128x128@2x.png",
+      "before": "73f6000cf7e776156ab243de43a61922a5a40e07c0f9527c947dd6398d85b695",
+      "after": "49318df6f462d3096dac80c1459845857cfa033c8a9ba11a645fc6adbe3259aa"
+    },
+    {
+      "path": "OSX/Assets.xcassets/AppIcon.appiconset/icon_16x16.png",
+      "before": "df137d7d5847fd842ba0a5d70d5b1703d3d6cffbcc3b94358bcda93cf2fbe4fb",
+      "after": "ca81c64ea09650c1524962745a5848935e7d7a918263bae559b47445d7ac357c"
+    },
+    {
+      "path": "OSX/Assets.xcassets/AppIcon.appiconset/icon_16x16@2x.png",
+      "before": "32c6856fcbcf323f65c28fd32107ecc1dfe68c22f9a8b88f02662bd057971f6b",
+      "after": "a9c0ca9938f285fef85ee8fb1dfd28da750a0e5c45b502ee576d549157c1e558"
+    },
+    {
+      "path": "OSX/Assets.xcassets/AppIcon.appiconset/icon_256x256.png",
+      "before": "6492509998340e01ff75bfefc1d9d739f220c5ccca050f58a2ef33d28fc37269",
+      "after": "49318df6f462d3096dac80c1459845857cfa033c8a9ba11a645fc6adbe3259aa"
+    },
+    {
+      "path": "OSX/Assets.xcassets/AppIcon.appiconset/icon_256x256@2x.png",
+      "before": "d1354bb5fdcf0047d38a00d122be0f1613b937fc4358489898aa7b43e0d4cd45",
+      "after": "8707ef1f744264e1b5bccc99c2af2b145d5ba22d2d86c70c750c12fc655ca9f6"
+    },
+    {
+      "path": "OSX/Assets.xcassets/AppIcon.appiconset/icon_32x32.png",
+      "before": "0b929ae98dcfcf091d0b44b6a7b783f3bfcc3d1a5d16b375e3a57050a293ad6e",
+      "after": "a9c0ca9938f285fef85ee8fb1dfd28da750a0e5c45b502ee576d549157c1e558"
+    },
+    {
+      "path": "OSX/Assets.xcassets/AppIcon.appiconset/icon_32x32@2x.png",
+      "before": "20983795c8e1b4657b74917d6b807f16bd5dabcea0ad1e007610bf74e36e6152",
+      "after": "5b4341c643731c538f1947f4667c73143f018fc01db58b9cf0302e8c9031ed26"
+    },
+    {
+      "path": "OSX/Assets.xcassets/AppIcon.appiconset/icon_512x512.png",
+      "before": "d11982744d1bbf5e8d9dfb94927c8ee8072e91cf83444997dfc64b3140be0f00",
+      "after": "8707ef1f744264e1b5bccc99c2af2b145d5ba22d2d86c70c750c12fc655ca9f6"
+    },
+    {
+      "path": "OSX/Assets.xcassets/AppIcon.appiconset/icon_512x512@2x.png",
+      "before": "080c8920ddfac8df88cdf24eb9e3919ae77d7d3729e34e3e7d136ca9f0ee092b",
+      "after": "ad578b4093edeb256153b16a585521aa99b54d89ddaa799d6aca12c1808e2f1c"
+    },
+    {
+      "path": "OSX/Assets.xcassets/eng.imageset/eng.png",
+      "before": "8cadfe17c89d8fdd89d41db02f8805fd14d6f01c2a0c7c50165871421866ce7b",
+      "after": "e89fcf2bb91f83372a9f5bc7d97fbbd0b1fedabc9179083517047e814f5a3ee4"
+    },
+    {
+      "path": "OSX/Assets.xcassets/eng.imageset/eng@2x.png",
+      "before": "2e3a3f3093297ecb75299492b9501d98c7c79faace787e6107b7dbacb47d543b",
+      "after": "13374217370f71a5531be1ceb176484b72b16520c964828e0aa3793e0d3a197b"
+    },
+    {
+      "path": "OSX/Assets.xcassets/han.imageset/han.png",
+      "before": "b28a147e1622094f0db3138b644adce921f0c6c0dbfb2163e8ffaf84be005e4a",
+      "after": "3a116a74329b044f49cebf97933301a6006409bfa9e62eb49903f3370e86c87a"
+    },
+    {
+      "path": "OSX/Assets.xcassets/han.imageset/han@2x.png",
+      "before": "febb75a617449413e80536a317f206d669ef15f6000268e6d5e8bc3b6ebbb5ad",
+      "after": "06cf74ba9783bac2e3f8ecb08314f8191a71c707c262ae44425b6e89008b2249"
+    },
+    {
+      "path": "OSX/Assets.xcassets/han2.imageset/han2.png",
+      "before": "8b3970ad9b26511388db93ac7027bd85d11af787cec403418cc8846c774be1c3",
+      "after": "3a116a74329b044f49cebf97933301a6006409bfa9e62eb49903f3370e86c87a"
+    },
+    {
+      "path": "OSX/Assets.xcassets/han2.imageset/han2@2x.png",
+      "before": "7b9eacf9bc14c2784b5d138fdc57de7ce24a5243bdc1e80e978ac5b0fcdd8f8a",
+      "after": "06cf74ba9783bac2e3f8ecb08314f8191a71c707c262ae44425b6e89008b2249"
+    },
+    {
+      "path": "OSX/Assets.xcassets/han3.imageset/han3.png",
+      "before": "781677439e4d8b4a7d69582d609107d6649a6f3c7bfd1c0747afee2c7290f45a",
+      "after": "3a116a74329b044f49cebf97933301a6006409bfa9e62eb49903f3370e86c87a"
+    },
+    {
+      "path": "OSX/Assets.xcassets/han3.imageset/han3@2x.png",
+      "before": "667651f9a501c702eb85a8fa83712364647cf4e976ac7c909a9d5332e11d43b5",
+      "after": "06cf74ba9783bac2e3f8ecb08314f8191a71c707c262ae44425b6e89008b2249"
+    },
+    {
+      "path": "OSX/Assets.xcassets/han390.imageset/han390.png",
+      "before": "552abab5daf007f3ea507e8ef781d40eba0afd0b764142a2bd644f3cce09be16",
+      "after": "3a116a74329b044f49cebf97933301a6006409bfa9e62eb49903f3370e86c87a"
+    },
+    {
+      "path": "OSX/Assets.xcassets/han390.imageset/han390@2x.png",
+      "before": "fd9922d3813ac868cb2c396ee7a6cf2642296f4522e6fc7b7c0a50006425421b",
+      "after": "06cf74ba9783bac2e3f8ecb08314f8191a71c707c262ae44425b6e89008b2249"
+    },
+    {
+      "path": "OSX/Assets.xcassets/han3final.imageset/han3final.png",
+      "before": "e42e1e9aaeb81e45f94ab28051e99906e1612e65b04aad4e7899abcf165349b0",
+      "after": "3a116a74329b044f49cebf97933301a6006409bfa9e62eb49903f3370e86c87a"
+    },
+    {
+      "path": "OSX/Assets.xcassets/han3final.imageset/han3final@2x.png",
+      "before": "4eda9cc1c6e51f7b7842b18c7e458f8c77867285363ca732dc387f67eaa6cbe1",
+      "after": "06cf74ba9783bac2e3f8ecb08314f8191a71c707c262ae44425b6e89008b2249"
+    },
+    {
+      "path": "OSX/Assets.xcassets/hanroman.imageset/hanroman.png",
+      "before": "02aa269676606de2e748812b13549ad01d9d0595b0386193f86650337e254f0d",
+      "after": "3a116a74329b044f49cebf97933301a6006409bfa9e62eb49903f3370e86c87a"
+    },
+    {
+      "path": "OSX/Assets.xcassets/hanroman.imageset/hanroman@2x.png",
+      "before": "814467a65427dc600fad9055394cdb5f42b9d940c0d5d459b733c13a8edb523e",
+      "after": "06cf74ba9783bac2e3f8ecb08314f8191a71c707c262ae44425b6e89008b2249"
+    },
+    {
+      "path": "OSX/Assets.xcassets/qwerty.imageset/qwerty.png",
+      "before": "1f240aef4f68b6bcb5867bf5a0ca307df3d0e17400d98ce929c212aaa98b3ade",
+      "after": "e89fcf2bb91f83372a9f5bc7d97fbbd0b1fedabc9179083517047e814f5a3ee4"
+    },
+    {
+      "path": "OSX/Assets.xcassets/qwerty.imageset/qwerty@2x.png",
+      "before": "428ce4e3bd92bcd4d47a76fda5aa7796f5c1f19e44e3c196c68b25661474ee49",
+      "after": "13374217370f71a5531be1ceb176484b72b16520c964828e0aa3793e0d3a197b"
+    },
+    {
+      "path": "OSX/ConfigurationWindow.swift",
+      "before": "0892555445b0dc49aec7c042a01a23ff4439a0c2301db9d9dbee512efd61f250",
+      "after": "12f1fb01aeb651ddaa832e87ea3f5d5cad08136383e8390c9157c9fe33c15f4f"
+    },
+    {
+      "path": "OSX/GureumAppDelegate.swift",
+      "before": "ab64b55ff11747cab5c5d4262705bed2fab69fa2fd26bbe0781986e1d09b50c3",
+      "after": "feb54d45583a24028b0f2cc50c3901d48f2a150144000dcbea538373521197c1"
+    },
+    {
+      "path": "OSX/GureumMenu.swift",
+      "before": "4f091daa017c3c7701b81bf4fc6c64b81165b862912ce614f15fad60a86400f4",
+      "after": "f4e8bdb3d5c5fcb82af06966c149a3ad7b8943dd505c45a0b94c6c636ec38a85"
+    },
+    {
+      "path": "OSX/Icons/HanjaIME.png",
+      "before": null,
+      "after": "3a116a74329b044f49cebf97933301a6006409bfa9e62eb49903f3370e86c87a"
+    },
+    {
+      "path": "OSX/Icons/HanjaIME@2x.png",
+      "before": null,
+      "after": "06cf74ba9783bac2e3f8ecb08314f8191a71c707c262ae44425b6e89008b2249"
+    },
+    {
+      "path": "OSX/Icons/colemak.png",
+      "before": "9255072fb6d8a606a7cfbea84a8e3ea8d5b6e6c22f5aa0f5e94817297481445e",
+      "after": "3a116a74329b044f49cebf97933301a6006409bfa9e62eb49903f3370e86c87a"
+    },
+    {
+      "path": "OSX/Icons/colemak@2x.png",
+      "before": "99ca4dd4e9ffadcd19012e50c36a351f81b73b53aa0a57a4d4dd89218dd50b8c",
+      "after": "3a116a74329b044f49cebf97933301a6006409bfa9e62eb49903f3370e86c87a"
+    },
+    {
+      "path": "OSX/Icons/command.png",
+      "before": "2759c64cb918ac962c47eff9fa0bbdeb5873071f003534538489a7cdd65d3185",
+      "after": "3a116a74329b044f49cebf97933301a6006409bfa9e62eb49903f3370e86c87a"
+    },
+    {
+      "path": "OSX/Icons/dvorak.png",
+      "before": "e9500a6956fe64fc4e4cc2bd5566455a1d10c3f1ed72da1d013af613afef92c9",
+      "after": "3a116a74329b044f49cebf97933301a6006409bfa9e62eb49903f3370e86c87a"
+    },
+    {
+      "path": "OSX/Icons/dvorak@2x.png",
+      "before": "a7d67c2c95dbb3276159a74c0d0c2548329d3e1637fedc2211c2fd0347c52a29",
+      "after": "3a116a74329b044f49cebf97933301a6006409bfa9e62eb49903f3370e86c87a"
+    },
+    {
+      "path": "OSX/Icons/libhangul_logo.png",
+      "before": "1a93838229df3e122dfb78679c81f7ef529ddffbbadb78c3911fe992ed0890b8",
+      "after": "3a116a74329b044f49cebf97933301a6006409bfa9e62eb49903f3370e86c87a"
+    },
+    {
+      "path": "OSX/Info.plist",
+      "before": "792ac12d2658fecb3ce5b835fb03699c238372a397ed662d1a3249a72a03dd6e",
+      "after": "bb61ed8a1e8444e3ad45f0c8bf6dc40b23fbe082c726e8fc613b586d003e242c"
+    },
+    {
+      "path": "OSX/MainMenu.xib",
+      "before": "abeb14b44a70152559ea542f718c97d9a70ca31890ac946055b826bce098d1f8",
+      "after": "a0f1d953b6ddb90b7194eb530b825af581601586b43403d70cd3cad215421117"
+    },
+    {
+      "path": "OSX/UpdateManager.swift",
+      "before": "ee4b7153079da1d263d97483a1549807c38257772e22983504724a87e056a708",
+      "after": "959f6ea6f39ee3f321f294e8e6547a2ad67da396ae50b9244ba293c97da7567a"
+    },
+    {
+      "path": "OSX/Version.xcconfig",
+      "before": "0989bc012e50f3d3ce404e3d937e09379c0eadeb426bb0d2328091d45c21dc8e",
+      "after": "a2b5de81b6d157f346d4df339250b873a904b18923909f89d1caed1457129bae"
+    },
+    {
+      "path": "OSX/en.lproj/InfoPlist.strings",
+      "before": "d24ca90365d3b86bcc2d00f9f9be6e7cfb0520f00557b8b4d46d03f59a57e82e",
+      "after": "bebaeadaeec33d7f2bb491f3122a461bdd70c980fed2cc5b77ec167a180dbb1f"
+    },
+    {
+      "path": "OSX/ko.lproj/InfoPlist.strings",
+      "before": "d334ef91534c030fedd9e7bb63a2b207289d42257b7f6a0c6b9b13310414a155",
+      "after": "bebaeadaeec33d7f2bb491f3122a461bdd70c980fed2cc5b77ec167a180dbb1f"
+    },
+    {
+      "path": "OSXCore/Configuration.swift",
+      "before": "3863f6ec189330a7ac074fb588e7033d944c38af309e18e34c91723f28296b9d",
+      "after": "d386f9c376b7d9c69d5cc780a9a1595192f1e2d6ff345c445273533a9a697f00"
+    },
+    {
+      "path": "OSXCore/Debug.swift",
+      "before": "f8e6ab4ba058c3d0636b9c4b5c9319d7a052b2433923acc2cd05e73ce488bfd8",
+      "after": "bb37d890c68bbded4e7810e8a675a4f5b996cf89ea056a7b96f1016f3e754d8d"
+    },
+    {
+      "path": "OSXCore/GureumComposer.swift",
+      "before": "a717f19b3dc2f1b2a355ec67b229e2e165970851a6a7187276912ca4b7f9f391",
+      "after": "6b31e802908eda8a0464ec0be64d4872be2b9be2e627e81abf70923076b773b4"
+    },
+    {
+      "path": "OSXCore/HangulComposer.swift",
+      "before": "01beb75f0446c33b0421233f4291d0cc4f4e370fe78f0297cf2a8eb9b4326e51",
+      "after": "112a24e62ca21613d48e9bb64e65ed47f3d133d6facb84c5ded9242bba272474"
+    },
+    {
+      "path": "OSXCore/HanjaIMECandidatePanel.swift",
+      "before": null,
+      "after": "1270dc17a44d1d5446f46c7706e16a64c9891cf5e3fc32e37328c0737078d816"
+    },
+    {
+      "path": "OSXCore/HanjaIMEComposer.swift",
+      "before": null,
+      "after": "5ce2604a4d2806401328f8bc4d6e869bfee7d7121e727d6b5543d171d4064ca8"
+    },
+    {
+      "path": "OSXCore/HanjaIMECore.swift",
+      "before": null,
+      "after": "6107d6a81d74acb60256352ac2ad3b4515d3a96a9f6e152be7235552991da708"
+    },
+    {
+      "path": "OSXCore/HanjaIMEStorage.swift",
+      "before": null,
+      "after": "435e751335513093255ef8579f72dff04978a5a81b3a1e5fb662c79006284e5e"
+    },
+    {
+      "path": "OSXCore/InputController.swift",
+      "before": "0c27bc08d1aa689136dc68321921bf43a0ee7318821325d6cd91fa70e2fd9d43",
+      "after": "cdb83301fb8cf400e2d04edd963e3da73ef5e0061dc3ad5e51f1a4938e06ff50"
+    },
+    {
+      "path": "OSXCore/InputMethodServer.swift",
+      "before": "c446f81af0408d6e8ef281a87317e6d2f022ccf5b7a354d9239d13654f4acef4",
+      "after": "b4b1be4f0c5516b54cd54c99b36aabfda8cb0df82d39c6a7464c42d4769f1def"
+    },
+    {
+      "path": "OSXCore/InputReceiver.swift",
+      "before": "ba4f4c766be22341517acabe5db259d07a42775094e80b8c57484b54a7e0cd15",
+      "after": "b62d20096d86c5d6cb7e1785bf6961ba0e052c50f6e90c222e49a20670b24f01"
+    },
+    {
+      "path": "OSXCore/SearchComposer.swift",
+      "before": "c6783756bb830d7b65036d0df0b9183ff7b782b277eb58687a28fc72ed9e9883",
+      "after": "d2007214a51f77b2f0dd4a2699f721535b3e10615a9a547d7c27513e8742a15c"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "pins": [
+    {
+      "identity": "masshortcut",
+      "kind": "remoteSourceControl",
+      "location": "https://github.com/shpakovski/MASShortcut",
+      "state": {
+        "revision": "6ddfd5f866f8f9679b5af656604dd33cc2540a48"
+      }
+    },
+    {
+      "identity": "fuse-swift",
+      "kind": "remoteSourceControl",
+      "location": "https://github.com/krisk/fuse-swift",
+      "state": {
+        "revision": "26ba868691b2d8b7bf2b1322951eb591be70ccca"
+      }
+    },
+    {
+      "identity": "swiftup",
+      "kind": "remoteSourceControl",
+      "location": "https://github.com/youknowone/SwiftUp",
+      "state": {
+        "revision": "9416d8dd501ba1dac94a3c1139fa3a7968233904"
+      }
+    }
+  ],
+  "version": 2
+}

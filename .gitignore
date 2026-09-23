@@ -1,0 +1,10 @@
+.DS_Store
+__pycache__/
+*.pyc
+/build/
+/dist/
+/_development_logs/
+/verification/
+*.zip
+*.zip.sha256
+xcuserdata/
