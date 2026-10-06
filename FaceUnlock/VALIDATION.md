@@ -22,8 +22,6 @@ This is experimental webcam authentication, not Apple Face ID. It is not approve
 - A read-only live test rejects the ordinary desktop as an unlock target. No password is supplied or typed by this test.
 - Manager, notch and face service Release build succeeded. The locally staged bundle passes ad-hoc signature verification.
 - UI opens the separate service; default off, empty credential field and disabled enable button were observed.
-- User reported camera light without a usable enrollment flow. Added local preview, a face guide, sample progress, explicit owner-authentication/camera status and registration presence checks.
-- Registration status subsequently showed a saved password and no accessible face template. Credential values were not read by the development tools.
 
 ## Not yet verified
 

@@ -1,4 +1,4 @@
-# HanjaIME 0.9.4
+# HanjaIME 0.9.8
 
 GureumとlibhangulをベースにしたmacOS用の韓国語2ボル式入力方式です。韓国語を入力して、漢字・日本の新字体・関連する絵文字を選べます。
 

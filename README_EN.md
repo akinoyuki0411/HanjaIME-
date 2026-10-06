@@ -1,4 +1,4 @@
-# HanjaIME 0.9.4
+# HanjaIME 0.9.8
 
 A Korean 2-set input method for macOS, based on Gureum and libhangul. Type Korean and choose Hanja, Japanese character forms or related emoji.
 

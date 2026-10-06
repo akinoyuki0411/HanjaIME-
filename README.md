@@ -6,8 +6,8 @@
 
 ## 설치
 
-1. [Releases](https://github.com/akinoyuki0411/HanjaIME-/releases)에서 최신 정식 배포 ZIP을 받습니다. Code 탭의 소스 버전은 **0.9.4**이며, 배포 ZIP의 버전은 Releases에서 확인하세요.
-2. 새 폴더에 압축을 풀고 `repair_and_install.command`를 실행합니다. 현재 설치기는 Xcode와 명령줄 개발 도구로 검증·빌드를 수행할 수 있습니다.
+1. [Releases](https://github.com/akinoyuki0411/HanjaIME-/releases)에서 최신 정식 배포 ZIP을 받습니다. 현재 버전은 한국어 입력기 **0.9.8**, 일본어 입력기 **0.1.7**, 노치·통합 설정 **1.0.3**입니다.
+2. 통합 설정 ZIP을 풀어 `Hanjimi Settings.app`을 `~/Applications`에 넣고 실행합니다. 필요한 구성요소의 설치 버튼을 누릅니다. 개별 입력기 앱은 `~/Library/Input Methods`에, 노치는 `~/Applications`에 설치할 수도 있습니다. 소스 재빌드 설치기는 별도이며 전체 Xcode가 필요할 수 있습니다.
 3. macOS 입력 소스에서 **HanjaIME 두벌식**을 선택합니다. 목록에 바로 나타나지 않으면 로그아웃 후 다시 로그인합니다.
 4. 입력 메뉴 → 환경설정 → 일반에서 **한국어 / English / 日本語**를 선택합니다. 화면 언어만 변경하며 입력 방식은 한국어 두벌식입니다.
 
@@ -23,7 +23,7 @@
 
 - [버그 알리기](https://github.com/akinoyuki0411/HanjaIME-/issues/new): 발생 앱, macOS 버전, 한지미 버전, 입력 전환 방법과 재현 순서를 적어 주세요. 개인 문장이나 비밀번호는 포함하지 마세요.
 - [소스코드](https://github.com/akinoyuki0411/HanjaIME-)
-- 이메일: [GitHub Issues](https://github.com/akinoyuki0411/HanjaIME-/issues)
+- 문의: [GitHub Issues](https://github.com/akinoyuki0411/HanjaIME-/issues)
 - 후원 페이지는 준비 중이며 현재 결제를 받지 않습니다.
 
 ## 배포 및 라이선스
@@ -46,3 +46,9 @@
 | [VERSIONING.md](VERSIONING.md) | 버전 번호 규칙 |
 
 설치용 앱은 Releases에, 소스와 빌드 자료는 Code에 둡니다. 개인 단어, 사용자 설정, 빌드 캐시와 작업 로그는 포함하지 않습니다.
+
+## 일본어 입력기와 노치
+
+[일본어 입력기](JapaneseIME/README.md)는 구자체 우선 후보와 Apple·NAVER 사전 선택, 선택적 Apple 번역을 지원합니다. [노치](NotchNext/README.md)는 미디어·일정·파일 보관함·날씨를 제공합니다. 통합 설정은 세 앱의 설치와 설정 열기를 지원합니다. 변경 내역은 각 앱의 정보 화면에서 확인합니다.
+
+얼굴 인식 도우미는 검증 중인 실험 기능이며 기본 꺼짐입니다. Apple Face ID나 Touch ID를 대체하는 검증된 인증 수단이 아닙니다. 성공적인 잠금 해제나 생체 인식 정확도를 보장하지 않습니다.
