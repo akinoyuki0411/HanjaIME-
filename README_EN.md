@@ -12,6 +12,6 @@ Settings → About offers GitHub release checks and verified ZIP downloads. Auto
 
 This is an Apple Silicon development-signed build, not Developer ID notarized. Gureum remains installed separately. The installed app lives in `~/Library/Input Methods/HanjaIME.app`.
 
-Contact: akinoyuki0122@gmail.com · [Issues](https://github.com/akinoyuki0411/HanjaIME-/issues) · [Source](https://github.com/akinoyuki0411/HanjaIME-). Donations are not open yet.
+Contact: GitHub Issues · [Issues](https://github.com/akinoyuki0411/HanjaIME-/issues) · [Source](https://github.com/akinoyuki0411/HanjaIME-). Donations are not open yet.
 
 Personal words and learning history stay on your Mac and are not included in releases. Naver lookup sends only the selected dictionary term when requested. Optional update checks contact GitHub. See THIRD_PARTY_NOTICES.md, licenses/ and CorrespondingSource/ for licenses and corresponding source.

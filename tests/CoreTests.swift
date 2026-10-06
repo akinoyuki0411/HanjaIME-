@@ -393,6 +393,25 @@ final class RealDictionary {
     for key in HanjaIMEOptionSymbols.yetKeys {
       expect(HanjaIMEOptionSymbols.yetKey(key: key, shift: false) == key.uppercased(), "2y shifted position")
     }
+    var accepted: [(String, String)] = []
+    session.onCandidateAccepted = { accepted.append(($0, $1)) }
+    type("eogksalsrnr")
+    expect(accepted.isEmpty, "typing does not publish a notch selection")
+    let acceptedGeneration = session.generation
+    session.highlight(index: 0, generation: acceptedGeneration)
+    expect(accepted.isEmpty, "highlight does not publish a notch selection")
+    expect(!session.choose(index: 0, generation: acceptedGeneration &+ 1), "stale notch selection is rejected")
+    expect(accepted.isEmpty, "stale selection does not publish")
+    expect(session.choose(index: 0, generation: acceptedGeneration), "valid selection commits with optional callback")
+    expect(accepted.count == 1 && accepted[0].0 == "대한민국" && accepted[0].1 == "大韓民國", "callback contains only accepted reading and value")
+    expect(session.takeCommit() == "大韓民國", "optional callback preserves committed text")
+    expect(!session.choose(index: 0) && accepted.count == 1, "duplicate selection is not published")
+    type("eogksalsrnr"); session.commitRaw(); _ = session.takeCommit()
+    expect(accepted.count == 1, "raw Hangul does not publish")
+    type("eogksalsrnr")
+    _ = session.handle(.space(preserveHangul: false)); _ = session.handle(.enter)
+    expect(accepted.count == 2 && session.takeCommit() == "大韓民國", "Space Enter publishes exactly one accepted selection")
+    session.onCandidateAccepted = nil
     let start = Date()
     for _ in 0..<200 {
       type("eogksalsrnr")

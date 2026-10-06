@@ -1,0 +1,4 @@
+SKK-JISYO.L: https://github.com/skk-dev/dict (GPL-2.0-or-later). Original bytes included. SHA256 c791f578d1b4040fce282db29bc22b2cc7ea46f83e269fab2e0fa779e2967e40
+OldForms.json: factual character correspondences extracted from the parenthesized forms in the Agency for Cultural Affairs Joyo Kanji table, https://www.bunka.go.jp/kokugo_nihongo/sisaku/joho/joho/kijun/naikaku/pdf/joyokanjihyo_20101130.pdf
+PDF SHA256 d9f28aeb4ce8250dbde07de20ac66cca71805ba09d94e4942c752dffa84d8d42
+Compatibility ideographs are preserved as explicit Unicode scalar sequences. This does not cover every historical variant.

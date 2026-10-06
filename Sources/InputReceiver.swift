@@ -88,7 +88,9 @@ public class InputReceiver: InputTextDelegate {
     commitCompositionEvent(inputClient)
     inputting = wasInputting
     composer.clear()
-    InputMethodServer.shared.hanjaPanel.hide()
+    if InputMethodServer.shared.activeController === controller {
+      InputMethodServer.shared.hanjaPanel.hide()
+    }
     inputClient = sender
   }
 

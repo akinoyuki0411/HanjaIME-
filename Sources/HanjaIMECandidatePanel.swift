@@ -100,7 +100,10 @@ final class HanjaIMECandidatePanel: NSObject {
   }
 
   static func annotation(for candidate: HanjaIMECandidate, reading: String) -> String {
-    candidate.annotation.isEmpty ? (candidate.sourceReading ?? reading) : candidate.annotation
+    if candidate.kind == .hanja || candidate.kind == .japanese {
+      return candidate.sourceReading ?? reading
+    }
+    return candidate.annotation.isEmpty ? (candidate.sourceReading ?? reading) : candidate.annotation
   }
 
   private static func label(_ text: String, frame: NSRect, size: CGFloat = 12) -> NSTextField {
@@ -263,7 +266,7 @@ final class HanjaIMECandidatePanel: NSObject {
         button.onHover = { [weak self] rowButton in self?.hoverDefinition(rowButton) }
         button.onLeave = { [weak self] in self?.checkPointer(NSEvent.mouseLocation) }
         row.addSubview(button)
-        let annotation = Self.label("\(candidate.sourceReading ?? session.candidateReading)  \(candidate.annotation)",
+        let annotation = Self.label(Self.annotation(for: candidate, reading: session.candidateReading),
           frame: NSRect(x: 27, y: 1, width: 215, height: 12), size: 10)
         annotation.textColor = selected ? .white : .secondaryLabelColor
         button.toolTip = annotation.stringValue
@@ -275,7 +278,7 @@ final class HanjaIMECandidatePanel: NSObject {
           book.frame = NSRect(x: size.width - 32, y: 2, width: 23, height: 21)
           book.isBordered = false
           book.contentTintColor = selected ? .white : .labelColor
-          book.toolTip = "\(candidate.sourceValue ?? candidate.value) — Apple 사전 뜻풀이"
+          book.toolTip = "\(candidate.sourceValue ?? candidate.value) — 뜻풀이"
           book.onHover = { [weak self] button in self?.hoverDefinition(button) }
           book.onLeave = { [weak self] in self?.checkPointer(NSEvent.mouseLocation) }
           row.addSubview(book)
@@ -383,7 +386,7 @@ final class HanjaIMECandidatePanel: NSObject {
   private func positionDefinition(on visible: NSRect? = nil) {
     guard let area = visible ?? anchorScreen?.visibleFrame.insetBy(dx: 2, dy: 2) else { return }
     definitionPanel.setFrame(HanjaIMEPanelLayout.definition(candidate: panel.frame,
-      size: naverView == nil ? NSSize(width: 280, height: 220) : NSSize(width: 420, height: 560), visible: area), display: true)
+      size: NSSize(width: 280, height: 220), visible: area), display: true)
   }
 
   private func current(_ button: HanjaIMERowButton) -> (InputController, HanjaIMEComposer)? {
@@ -477,6 +480,11 @@ final class HanjaIMECandidatePanel: NSObject {
     let size = definitionPanel.frame.size
     guard size.height >= 80 else { closeDefinition(); return }
     let content = Self.background(size: size)
+    let priority = HanjaIMEDictionaryPriority.current
+    if priority == .naverFirst {
+      showNaverDefinition(request)
+      return
+    }
     let dictionaryLabel = request.prefersJapaneseDictionary ? "일본어 사전 우선" : "한국어 사전 우선"
     let title = Self.label(request.term + "  [" + request.reading + "] · " + dictionaryLabel,
       frame: NSRect(x: 10, y: size.height - 30, width: size.width - 20, height: 22), size: 13)
@@ -526,7 +534,7 @@ final class HanjaIMECandidatePanel: NSObject {
         guard let self = self, self.requestID == token, self.shownDefinition == request,
           self.panel.isVisible, self.definitionPanel.isVisible else { return }
         self.definitionText?.string = body
-        if result == nil,
+        if result == nil, priority.usesNaver,
           Configuration.shared.object(forKey: "HanjaIME.NaverFallback") as? Bool ?? true {
           self.showNaverDefinition(request)
         }
@@ -541,77 +549,76 @@ final class HanjaIMECandidatePanel: NSObject {
     web.frame = NSRect(origin: .zero, size: definitionPanel.frame.size)
     web.autoresizingMask = [.width, .height]
     definitionPanel.contentView = web
+    if definitionPanel.parent == nil { panel.addChildWindow(definitionPanel, ordered: .above) }
+    definitionPanel.orderFrontRegardless()
     web.start()
   }
 
 }
 
-/// Official dictionary page, with an ephemeral store; no scraping or copied definitions.
-private final class HanjaIMENaverDefinitionView: NSView, WKNavigationDelegate {
-  private let url: URL
-  private let web: WKWebView
-  private let status = NSTextField(labelWithString: "네이버 사전 연결 중…")
-  private var timeout: DispatchWorkItem?
-  init(url: URL) {
-    self.url = url
-    let config = WKWebViewConfiguration()
-    config.websiteDataStore = .nonPersistent()
-    web = WKWebView(frame: .zero, configuration: config)
-    super.init(frame: NSRect(x: 0, y: 0, width: 420, height: 440))
-    wantsLayer = true
-    layer?.backgroundColor = NSColor.windowBackgroundColor.cgColor
-    layer?.cornerRadius = 8
-    layer?.masksToBounds = true
-    status.font = .systemFont(ofSize: 11)
-    status.textColor = .secondaryLabelColor
-    status.maximumNumberOfLines = 2
-    let open = NSButton(title: "브라우저에서 열기", target: self, action: #selector(openBrowser))
-    open.bezelStyle = .rounded
-    for child in [web, status, open] { child.translatesAutoresizingMaskIntoConstraints = false; addSubview(child) }
-    NSLayoutConstraint.activate([
-      status.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-      status.topAnchor.constraint(equalTo: topAnchor, constant: 8),
-      status.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
-      status.heightAnchor.constraint(equalToConstant: 34),
-      web.topAnchor.constraint(equalTo: status.bottomAnchor, constant: 4),
-      web.leadingAnchor.constraint(equalTo: leadingAnchor), web.trailingAnchor.constraint(equalTo: trailingAnchor),
-      web.bottomAnchor.constraint(equalTo: open.topAnchor, constant: -6),
-      open.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8), open.centerXAnchor.constraint(equalTo: centerXAnchor),
-    ])
-    // Request the provider's own compact mobile layout for the small definition panel.
-    web.customUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1"
-    web.navigationDelegate = self
-  }
-  required init?(coder: NSCoder) { fatalError("Use init") }
-  func start() {
-    web.load(URLRequest(url: url, timeoutInterval: 15))
-    let item = DispatchWorkItem { [weak self] in
-      guard let self else { return }
-      self.web.stopLoading()
-      self.status.stringValue = "연결이 지연됩니다. 인터넷을 확인하거나 브라우저에서 열어 주세요."
+final class HanjaIMENaverDefinitionView: NSView, WKNavigationDelegate {
+    private static let cache:NSCache<NSString,NSString> = {let cache=NSCache<NSString,NSString>();cache.countLimit=64;return cache}()
+    private let url:URL
+    private let web:WKWebView
+    private let body=NSTextView()
+    private var retry:DispatchWorkItem?
+    private var stopped=false
+    private var extracting=false
+    private var attempts=0
+    init(url:URL) {
+        self.url=url
+        let config=WKWebViewConfiguration();config.websiteDataStore = .nonPersistent()
+        web=WKWebView(frame:NSRect(x:0,y:0,width:640,height:600),configuration:config)
+        super.init(frame:NSRect(x:0,y:0,width:280,height:220))
+        wantsLayer=true;layer?.cornerRadius=7;layer?.masksToBounds=true;layer?.backgroundColor=NSColor.windowBackgroundColor.cgColor
+        let title=NSTextField(labelWithString:"네이버 사전 · NAVER");title.font = .systemFont(ofSize:11);title.textColor = .secondaryLabelColor
+        let scroll=NSScrollView();scroll.hasVerticalScroller=true;scroll.drawsBackground=false
+        body.frame=NSRect(x:0,y:0,width:260,height:160);body.autoresizingMask=[.width];body.isEditable=false;body.isSelectable=true;body.drawsBackground=false;body.font = .systemFont(ofSize:12);body.textColor = .labelColor;body.isVerticallyResizable=true;body.isHorizontallyResizable=false;body.textContainer?.widthTracksTextView=true;body.textContainerInset=NSSize(width:2,height:3)
+        body.string="뜻을 찾는 중…";scroll.documentView=body
+        let open=NSButton(title:"네이버에서 자세히 보기",target:self,action:#selector(openBrowser));open.bezelStyle = .rounded;open.controlSize = .small
+        for child in [title,scroll,open] {child.translatesAutoresizingMaskIntoConstraints=false;addSubview(child)}
+        NSLayoutConstraint.activate([title.leadingAnchor.constraint(equalTo:leadingAnchor,constant:10),title.topAnchor.constraint(equalTo:topAnchor,constant:8),title.trailingAnchor.constraint(equalTo:trailingAnchor,constant:-10),title.heightAnchor.constraint(equalToConstant:18),scroll.leadingAnchor.constraint(equalTo:leadingAnchor,constant:8),scroll.trailingAnchor.constraint(equalTo:trailingAnchor,constant:-8),scroll.topAnchor.constraint(equalTo:title.bottomAnchor,constant:5),scroll.bottomAnchor.constraint(equalTo:open.topAnchor,constant:-5),open.centerXAnchor.constraint(equalTo:centerXAnchor),open.bottomAnchor.constraint(equalTo:bottomAnchor,constant:-7)])
+        web.isHidden=true;addSubview(web);web.navigationDelegate=self
     }
-    timeout = item
-    DispatchQueue.main.asyncAfter(deadline: .now() + 15, execute: item)
-  }
-  func stop() { timeout?.cancel(); timeout = nil; web.stopLoading(); web.navigationDelegate = nil }
-  @objc private func openBrowser() { NSWorkspace.shared.open(url) }
-  func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-    timeout?.cancel()
-    status.stringValue = "네이버 사전 · NAVER 제공\n검색어만 전송됩니다. 자동 연결은 설정에서 끌 수 있습니다."
-  }
-  func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) { failed(error) }
-  func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) { failed(error) }
-  private func failed(_ error: Error) {
-    guard (error as NSError).code != NSURLErrorCancelled else { return }
-    timeout?.cancel()
-    status.stringValue = "네이버 사전을 열지 못했습니다. 인터넷을 확인하거나 브라우저에서 열어 주세요."
-  }
-  func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
-    decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-    guard let target = navigationAction.request.url, HanjaIMEDictionaryLink.isAllowed(target) else {
-      decisionHandler(.cancel); return
+    required init?(coder:NSCoder) {fatalError("Use init")}
+    func start() {
+        if let cached=Self.cache.object(forKey:url.absoluteString as NSString) {body.string=cached as String;return}
+        web.load(URLRequest(url:url,timeoutInterval:12))
+        let work=DispatchWorkItem { [weak self] in self?.extract() };retry=work;DispatchQueue.main.asyncAfter(deadline:.now()+0.5,execute:work)
     }
-    if navigationAction.targetFrame == nil { webView.load(navigationAction.request); decisionHandler(.cancel) }
-    else { decisionHandler(.allow) }
-  }
+    func stop() {stopped=true;retry?.cancel();web.stopLoading();web.navigationDelegate=nil}
+    @objc private func openBrowser() {NSWorkspace.shared.open(url)}
+    private func extract() {
+        guard !stopped,!extracting else{return};extracting=true;attempts += 1
+        let script="""
+        (() => {
+          const query=new URLSearchParams(location.hash.split('?')[1]||'').get('query')||'';
+          const letter=location.hostname==='hanja.dict.naver.com' && Array.from(query).length===1 ? document.querySelector('#searchPage_letter .row') : null;
+          const row=letter || document.querySelector('#searchPage_entry .row') || document.querySelector('#searchPage_hanja .row') || document.querySelector('#searchPage_word .row');
+          if(!row) return null;
+          const clean=s=>(s||'').replace(/\\s+/g,' ').trim();
+          const origin=row.querySelector('.origin .link');
+          const kanji=row.querySelector('.origin ._kanji');
+          const meaning=row.querySelector('.mean_list') || row.querySelector('.entry_mean');
+          const source=row.querySelector('.source');
+          if(!meaning || !clean(meaning.innerText)) return null;
+          return [(clean(origin?.innerText)||query)+' '+clean(kanji?.innerText),clean(meaning.innerText).slice(0,600),clean(source?.innerText)].filter(Boolean).join('\\n\\n');
+        })()
+        """
+        web.evaluateJavaScript(script) { [weak self] value,error in
+            guard let self,!self.stopped else{return};self.extracting=false
+            if let text=value as? String,!text.isEmpty {
+                self.body.string=text;Self.cache.setObject(text as NSString,forKey:self.url.absoluteString as NSString);self.retry?.cancel();self.stopped=true;self.web.stopLoading();return
+            }
+            if self.attempts>=24 {self.body.string="뜻풀이를 불러오지 못했습니다. 아래 버튼으로 네이버 사전에서 확인해 주세요.";self.web.stopLoading();return}
+            let work=DispatchWorkItem { [weak self] in self?.extract() };self.retry=work;DispatchQueue.main.asyncAfter(deadline:.now()+0.5,execute:work)
+        }
+    }
+    func webView(_ webView:WKWebView,didFinish navigation:WKNavigation!) {extract()}
+    func webView(_ webView:WKWebView,didFailProvisionalNavigation navigation:WKNavigation!,withError error:Error) {
+        guard !stopped,(error as NSError).code != NSURLErrorCancelled else{return};body.string="네이버 연결이 지연됩니다. 아래 버튼으로 직접 확인해 주세요."
+    }
+    func webView(_ webView:WKWebView,decidePolicyFor action:WKNavigationAction,decisionHandler:@escaping(WKNavigationActionPolicy)->Void) {
+        guard let url=action.request.url,url.scheme=="https",let host=url.host,host=="dict.naver.com" || host.hasSuffix(".dict.naver.com") else {decisionHandler(.cancel);return};decisionHandler(.allow)
+    }
 }

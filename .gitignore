@@ -8,3 +8,14 @@ __pycache__/
 *.zip
 *.zip.sha256
 xcuserdata/
+
+.build/
+.swiftpm/
+app-path.txt
+*.dSYM/
+.env*
+*.key
+*.pem
+/NotchNext/docs/
+/NotchNext/LOCALIZATION_AUDIT.json
+/docs/

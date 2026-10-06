@@ -23,7 +23,7 @@
 
 - [버그 알리기](https://github.com/akinoyuki0411/HanjaIME-/issues/new): 발생 앱, macOS 버전, 한지미 버전, 입력 전환 방법과 재현 순서를 적어 주세요. 개인 문장이나 비밀번호는 포함하지 마세요.
 - [소스코드](https://github.com/akinoyuki0411/HanjaIME-)
-- 이메일: [akinoyuki0122@gmail.com](mailto:akinoyuki0122@gmail.com)
+- 이메일: [GitHub Issues](https://github.com/akinoyuki0411/HanjaIME-/issues)
 - 후원 페이지는 준비 중이며 현재 결제를 받지 않습니다.
 
 ## 배포 및 라이선스

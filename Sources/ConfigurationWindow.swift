@@ -9,11 +9,11 @@ func L(_ ko: String, _ en: String, _ ja: String) -> String { HanjaIMEInterface.t
 enum HanjaIMELinks {
   static let repository = "https://github.com/akinoyuki0411/HanjaIME-"
   static func open(_ suffix: String = "") { NSWorkspace.shared.open(URL(string: repository + suffix)!) }
-  static func mail() { NSWorkspace.shared.open(URL(string: "mailto:akinoyuki0122@gmail.com")!) }
+  static func mail() { NSWorkspace.shared.open(URL(string: "https://github.com/akinoyuki0411/HanjaIME-/issues")!) }
   static func support() {
     let alert = NSAlert()
     alert.messageText = L("한지미 후원", "Support HanjaIME", "HanjaIMEを支援")
-    alert.informativeText = L("후원 페이지를 준비 중입니다. 현재 결제는 받지 않습니다. 문의: akinoyuki0122@gmail.com", "A support page is being prepared. Payments are not accepted yet. Contact: akinoyuki0122@gmail.com", "支援ページを準備中です。現在、支払いは受け付けていません。連絡先: akinoyuki0122@gmail.com")
+    alert.informativeText = L("후원 페이지를 준비 중입니다. 현재 결제는 받지 않습니다. 문의: GitHub Issues", "A support page is being prepared. Payments are not accepted yet. Contact: GitHub Issues", "支援ページを準備中です。現在、支払いは受け付けていません。連絡先: GitHub Issues")
     alert.addButton(withTitle: "OK"); alert.runModal()
   }
 }
@@ -55,6 +55,11 @@ private final class HanjaIMESettingsModel: ObservableObject {
       self.objectWillChange.send(); self.configuration.set($0, forKey: key)
     })
   }
+  func stringBinding(_ key: String, fallback: String) -> Binding<String> {
+    Binding(get: { self.configuration.string(forKey: key) ?? fallback }, set: {
+      self.objectWillChange.send(); self.configuration.set($0, forKey: key)
+    })
+  }
 }
 final class HanjaIMEPreferencesWindowController: NSWindowController {
   private let model: HanjaIMESettingsModel
@@ -63,7 +68,7 @@ final class HanjaIMEPreferencesWindowController: NSWindowController {
   init(configuration: Configuration) {
     model = HanjaIMESettingsModel(configuration)
     let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 660, height: 490), styleMask: [.titled, .closable, .miniaturizable, .resizable], backing: .buffered, defer: false)
-    window.title = L("한지미 설정", "HanjaIME Settings", "HanjaIME 設定")
+    window.title = L("한지미 입력기 설정", "HanjaIME Input Settings", "HanjaIME 入力設定")
     window.minSize = NSSize(width: 660, height: 430)
     window.titlebarAppearsTransparent = true; window.isReleasedWhenClosed = false; window.center()
     super.init(window: window)
@@ -76,7 +81,7 @@ final class HanjaIMEPreferencesWindowController: NSWindowController {
     }.store(in: &subscriptions)
     model.$language.dropFirst().sink { [weak self] language in
       HanjaIMEInterface.language = language
-      self?.window?.title = L("한지미 설정", "HanjaIME Settings", "HanjaIME 設定")
+      self?.window?.title = L("한지미 입력기 설정", "HanjaIME Input Settings", "HanjaIME 入力設定")
       self?.changelog?.close(); self?.changelog = nil
     }.store(in: &subscriptions)
   }
@@ -185,13 +190,22 @@ private struct HanjaIMESettingsView: View {
         key("Enter", L("현재 내용 확정", "Commit text", "入力を確定"))
         key("Shift + Space", L("한글 유지하고 공백", "Keep Hangul and add a space", "ハングルのまま空白を入力"))
         key("Esc", L("변환 취소", "Cancel conversion", "変換をキャンセル"))
-        Text(L("한/영 전환은 macOS 입력 소스 단축키를 사용하세요. Option은 옛한글 입력에 사용합니다.", "Use the macOS input-source shortcut to switch languages. Option is used for old Hangul.", "言語切替にはmacOSの入力ソース切替キーを使います。Optionは古ハングル入力に使用します。")).foregroundColor(.secondary)
+        Text(L("Caps Lock은 macOS가 ABC 입력 소스로 넘길 수 있습니다. 한글로 돌아오지 않으면 입력 메뉴에서 HanjaIME 두벌식을 다시 선택하세요.", "Caps Lock can move macOS to ABC. If Korean does not return, select HanjaIME 2-set again from the input menu.", "Caps LockでmacOSがABCへ切り替える場合があります。戻らないときは入力メニューでHanjaIME 2-setを選び直してください。")).foregroundColor(.secondary)
+      }
+      Card(L("맞춤법", "Spelling", "スペルチェック")) {
+        Toggle(L("입력 보조 맞춤법 검사 사용", "Enable spelling assistance", "入力補助の校正を使う"), isOn: model.binding("HanjaIME.SpellcheckEnabled"))
+        Text(L("다음 버전에서 후보를 다듬는 보조 기능으로 연결합니다. 한문·한자어는 붙여 쓰는 관례를 별도 규칙으로 처리합니다.", "This will be connected to candidate cleanup in a later version. Hanja compounds will use their own spacing rules.", "次の版で候補補正に接続します。漢文・漢字語は別の分かち書き規則で扱います。")).foregroundColor(.secondary)
       }
     case .words:
       Text(L("개인 단어 · 이 Mac에만 저장됩니다", "My Words · stored only on this Mac", "ユーザー辞書 · このMacにのみ保存")).font(.headline)
       WordSettings().id(model.language).frame(minHeight: 460).modifier(Glass())
     case .dictionary:
       Card(L("뜻풀이 연결", "Definitions", "意味を調べる")) {
+        Picker(L("사전 우선순위", "Dictionary priority", "辞書の優先順位"), selection: model.stringBinding(HanjaIMEDictionaryPriority.key, fallback: HanjaIMEDictionaryPriority.appleThenNaver.rawValue)) {
+          Text(L("Apple 먼저, 없으면 네이버", "Apple first, then Naver", "Apple優先、なければNAVER")).tag(HanjaIMEDictionaryPriority.appleThenNaver.rawValue)
+          Text(L("네이버 먼저", "Naver first", "NAVER優先")).tag(HanjaIMEDictionaryPriority.naverFirst.rawValue)
+          Text(L("Apple만", "Apple only", "Appleのみ")).tag(HanjaIMEDictionaryPriority.appleOnly.rawValue)
+        }.pickerStyle(.segmented)
         Toggle(L("Apple 사전에 없으면 네이버 사전 연결", "Use Naver when Apple Dictionary has no result", "Apple辞書にない場合はNAVER辞書を使用"), isOn: model.binding("HanjaIME.NaverFallback", fallback: true))
         Text(L("후보의 책 버튼을 눌렀을 때 선택한 검색어만 네이버로 전송합니다. 입력 문장과 개인 단어 목록은 전송하지 않습니다.", "Only the selected term is sent to Naver when you open a definition. Your sentence and personal word list are not sent.", "意味を開くと、選択した語だけをNAVERへ送信します。入力中の文章やユーザー辞書は送信しません。"))
         Text(L("일본어 신자체는 일본어사전, 한자는 한자사전에서 찾습니다. 온라인 사전은 인터넷 연결이 필요합니다.", "Japanese forms use the Japanese dictionary; Hanja uses the Hanja dictionary. Online lookup requires an internet connection.", "日本の字体は日本語辞書、漢字は漢字辞書で検索します。オンライン検索にはインターネット接続が必要です。")).foregroundColor(.secondary)

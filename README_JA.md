@@ -12,6 +12,6 @@ GureumとlibhangulをベースにしたmacOS用の韓国語2ボル式入力方�
 
 Apple Silicon向けの開発署名版です。Developer IDによる公証とIntel版は含まれていません。公式Gureumは別途保持されます。インストール先は `~/Library/Input Methods/HanjaIME.app` です。
 
-お問い合わせ: akinoyuki0122@gmail.com · [不具合報告](https://github.com/akinoyuki0411/HanjaIME-/issues) · [ソースコード](https://github.com/akinoyuki0411/HanjaIME-)。支援による支払いはまだ受け付けていません。
+お問い合わせ: GitHub Issues · [不具合報告](https://github.com/akinoyuki0411/HanjaIME-/issues) · [ソースコード](https://github.com/akinoyuki0411/HanjaIME-)。支援による支払いはまだ受け付けていません。
 
 ユーザー辞書と学習履歴はこのMacに保存され、配布物には含まれません。NAVER辞書には選択した語だけを検索時に送信します。任意の更新確認はGitHubに接続します。ライセンスと対応ソースは THIRD_PARTY_NOTICES.md、licenses/、CorrespondingSource/ を参照してください。

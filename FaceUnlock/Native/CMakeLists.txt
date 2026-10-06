@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.16)
+project(HanjaIMEFaceWorker LANGUAGES CXX)
+find_package(OpenCV 4.12 REQUIRED COMPONENTS core imgproc objdetect dnn)
+add_executable(HanjaIMEFaceWorker face_worker.cpp)
+target_compile_features(HanjaIMEFaceWorker PRIVATE cxx_std_17)
+target_link_libraries(HanjaIMEFaceWorker PRIVATE ${OpenCV_LIBS})
+target_include_directories(HanjaIMEFaceWorker PRIVATE ${OpenCV_INCLUDE_DIRS})

@@ -99,6 +99,9 @@ final class HanjaIMEComposer: Composer {
       predict: dictionary.predictions) {
       dictionary.lookup($0)
     }
+    session.onCandidateAccepted = { reading, candidate in
+      HanjaIMENotchBridge.candidateSelected(reading: reading, candidate: candidate)
+    }
   }
 
   var candidates: [NSAttributedString]? {

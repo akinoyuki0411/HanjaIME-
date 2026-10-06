@@ -50,6 +50,7 @@ public class InputController: IMKInputController {
   var receiver: InputReceiver!
   var lastFlags = NSEvent.ModifierFlags(rawValue: 0)
   var updating = false
+  var inputContextActive = true
 
   override init!(server: IMKServer, delegate: Any!, client inputClient: Any) {
     super.init(server: server, delegate: delegate, client: inputClient)
@@ -205,6 +206,7 @@ extension InputController {  // IMKStateSetting
     InputMethodServer.shared.hanjaPanel.hide()
     InputMethodServer.shared.activeController = self
     lastFlags = []
+    inputContextActive = true
     receiver.activateKoreanContext(asClient(sender))
   }
 
@@ -216,6 +218,7 @@ extension InputController {  // IMKStateSetting
   // Shared application cleanup. Only a controller initialized with a real
   // IMK connection may forward the lifecycle callback to IMKInputController.
   func deactivateInputContext(_ sender: Any!) {
+    inputContextActive = false
     dlog(true, "server deactivating")
     if responds(to: #selector(commitComposition(_:))) {
       self.commitComposition(sender)

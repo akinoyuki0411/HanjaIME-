@@ -108,6 +108,17 @@ final class HanjaIMEIntegrationTests: XCTestCase {
     XCTAssertFalse(HanjaIMEDictionaryLink.isAllowed(URL(string: "file:///tmp/example")!))
   }
 
+  func testDictionaryPriorityDefaultsAndCanPreferNaver() {
+    XCTAssertEqual(HanjaIMEDictionaryPriority.current, .appleThenNaver)
+    Configuration.shared.set(HanjaIMEDictionaryPriority.naverFirst.rawValue, forKey: HanjaIMEDictionaryPriority.key)
+    XCTAssertEqual(HanjaIMEDictionaryPriority.current, .naverFirst)
+    XCTAssertFalse(HanjaIMEDictionaryPriority.naverFirst.usesApple)
+    XCTAssertTrue(HanjaIMEDictionaryPriority.naverFirst.usesNaver)
+    Configuration.shared.set(HanjaIMEDictionaryPriority.appleOnly.rawValue, forKey: HanjaIMEDictionaryPriority.key)
+    XCTAssertTrue(HanjaIMEDictionaryPriority.appleOnly.usesApple)
+    XCTAssertFalse(HanjaIMEDictionaryPriority.appleOnly.usesNaver)
+  }
+
   func testIntegratedPersonalWordsSaveWithoutStandaloneApplication() throws {
     let controller = HanjaIMEWordManagementViewController(store: usage)
     let view = controller.view
@@ -198,18 +209,18 @@ final class HanjaIMEIntegrationTests: XCTestCase {
     XCTAssertTrue(HanjaIMECompound.candidates(reading: "가나다인", exact: exact).isEmpty)
   }
 
-  func testCandidateAnnotationsShowMeaningAndCharacterReadings() throws {
+  func testCandidateAnnotationsShowReadingInsteadOfMeaningHints() throws {
     app.inputKeys("alrnr")
     let candidates = app.controller.receiver.composer.hanjaComposer.session.candidates
     XCTAssertEqual(candidates.first?.value, "美國")
     let america = try XCTUnwrap(candidates.first { $0.value == "美國" })
     let rice = try XCTUnwrap(candidates.first { $0.value == "米麴" })
-    XCTAssertEqual(HanjaIMECandidatePanel.annotation(for: america, reading: "미국"), "아메리카합중국")
-    XCTAssertTrue(rice.annotation.contains("쌀 미"))
-    XCTAssertTrue(rice.annotation.contains("누룩 국"))
+    XCTAssertEqual(HanjaIMECandidatePanel.annotation(for: america, reading: "미국"), "미국")
+    XCTAssertEqual(HanjaIMECandidatePanel.annotation(for: rice, reading: "미국"), "미국")
     let content = try XCTUnwrap(InputMethodServer.shared.hanjaPanel.panel.contentView)
     let buttons = content.subviews.flatMap { $0.subviews }.compactMap { $0 as? NSButton }
-    XCTAssertTrue(buttons.contains { $0.attributedTitle.string.contains("아메리카합중국") })
+    XCTAssertTrue(buttons.contains { $0.attributedTitle.string.contains("미국") })
+    XCTAssertFalse(buttons.contains { $0.attributedTitle.string.contains("아메리카합중국") })
   }
 
   func testDelayedWebViewGeometryRecoversAfterInitialRetryBudget() throws {
@@ -685,6 +696,17 @@ final class HanjaIMEIntegrationTests: XCTestCase {
     }
   }
 
+  func testNaverFirstActuallyShowsDefinitionPanel() {
+    Configuration.shared.set(HanjaIMEDictionaryPriority.naverFirst.rawValue, forKey: HanjaIMEDictionaryPriority.key)
+    app.inputKeys("durtk")
+    let ui = InputMethodServer.shared.hanjaPanel
+    let session = app.controller.receiver.composer.hanjaComposer.session
+    ui.previewDefinition(index: 0, generation: session.generation)
+    XCTAssertTrue(ui.isDefinitionVisible, "Naver-first must order its panel front")
+    XCTAssertFalse(ui.panel.canBecomeKey)
+    ui.hide()
+  }
+
   func testDictionaryPreviewLeavesAndClosesWithCandidateWindow() {
     app.inputKeys("durtk")
     let ui = InputMethodServer.shared.hanjaPanel
@@ -954,6 +976,23 @@ final class HanjaIMEIntegrationTests: XCTestCase {
     XCTAssertFalse(ui.isVisible)
     XCTAssertFalse(ui.isDefinitionVisible)
     NSLog("HanjaIME floating regression: complete")
+  }
+
+  func testLateDeactivationDoesNotDismissNewContextCandidates() {
+    app.inputKeys("skfTl")
+    let old = app.controller
+    let next = ModerateApp()
+    next.controller.receiver.composer = GureumComposer(usage: usage)
+    InputMethodServer.shared.activeController = next.controller
+    next.inputKeys("durtk")
+    XCTAssertTrue(InputMethodServer.shared.hanjaPanel.isVisible)
+    old.deactivateInputContext(app.client)
+    XCTAssertTrue(InputMethodServer.shared.activeController === next.controller)
+    XCTAssertTrue(InputMethodServer.shared.hanjaPanel.isVisible)
+    InputMethodServer.shared.showOrHideCandidates(controller: old)
+    XCTAssertTrue(InputMethodServer.shared.activeController === next.controller)
+    XCTAssertTrue(InputMethodServer.shared.hanjaPanel.isVisible)
+    next.controller.deactivateInputContext(next.client)
   }
 
 }

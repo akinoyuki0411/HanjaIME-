@@ -17,15 +17,15 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>HanjaIME 0.9.4</string>
+	<string>HanjaIME 0.9.7</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.9.4</string>
+	<string>0.9.8</string>
 	<key>CFBundleSignature</key>
 	<string>yno1</string>
 	<key>CFBundleVersion</key>
-	<string>27</string>
+	<string>34</string>
 	<key>ComponentInputModeDict</key>
 	<dict>
 		<key>tsInputModeListKey</key>

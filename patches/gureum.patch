@@ -537,7 +537,7 @@ diff --git a/GureumTests/HanjaIMEIntegrationTests.swift b/GureumTests/HanjaIMEIn
 new file mode 100644
 --- /dev/null
 +++ b/GureumTests/HanjaIMEIntegrationTests.swift
-@@ -0,0 +1,959 @@
+@@ -0,0 +1,998 @@
 +import Cocoa
 +import InputMethodKit
 +import XCTest
@@ -648,6 +648,17 @@ new file mode 100644
 +    XCTAssertFalse(HanjaIMEDictionaryLink.isAllowed(URL(string: "file:///tmp/example")!))
 +  }
 +
++  func testDictionaryPriorityDefaultsAndCanPreferNaver() {
++    XCTAssertEqual(HanjaIMEDictionaryPriority.current, .appleThenNaver)
++    Configuration.shared.set(HanjaIMEDictionaryPriority.naverFirst.rawValue, forKey: HanjaIMEDictionaryPriority.key)
++    XCTAssertEqual(HanjaIMEDictionaryPriority.current, .naverFirst)
++    XCTAssertFalse(HanjaIMEDictionaryPriority.naverFirst.usesApple)
++    XCTAssertTrue(HanjaIMEDictionaryPriority.naverFirst.usesNaver)
++    Configuration.shared.set(HanjaIMEDictionaryPriority.appleOnly.rawValue, forKey: HanjaIMEDictionaryPriority.key)
++    XCTAssertTrue(HanjaIMEDictionaryPriority.appleOnly.usesApple)
++    XCTAssertFalse(HanjaIMEDictionaryPriority.appleOnly.usesNaver)
++  }
++
 +  func testIntegratedPersonalWordsSaveWithoutStandaloneApplication() throws {
 +    let controller = HanjaIMEWordManagementViewController(store: usage)
 +    let view = controller.view
@@ -738,18 +749,18 @@ new file mode 100644
 +    XCTAssertTrue(HanjaIMECompound.candidates(reading: "가나다인", exact: exact).isEmpty)
 +  }
 +
-+  func testCandidateAnnotationsShowMeaningAndCharacterReadings() throws {
++  func testCandidateAnnotationsShowReadingInsteadOfMeaningHints() throws {
 +    app.inputKeys("alrnr")
 +    let candidates = app.controller.receiver.composer.hanjaComposer.session.candidates
 +    XCTAssertEqual(candidates.first?.value, "美國")
 +    let america = try XCTUnwrap(candidates.first { $0.value == "美國" })
 +    let rice = try XCTUnwrap(candidates.first { $0.value == "米麴" })
-+    XCTAssertEqual(HanjaIMECandidatePanel.annotation(for: america, reading: "미국"), "아메리카합중국")
-+    XCTAssertTrue(rice.annotation.contains("쌀 미"))
-+    XCTAssertTrue(rice.annotation.contains("누룩 국"))
++    XCTAssertEqual(HanjaIMECandidatePanel.annotation(for: america, reading: "미국"), "미국")
++    XCTAssertEqual(HanjaIMECandidatePanel.annotation(for: rice, reading: "미국"), "미국")
 +    let content = try XCTUnwrap(InputMethodServer.shared.hanjaPanel.panel.contentView)
 +    let buttons = content.subviews.flatMap { $0.subviews }.compactMap { $0 as? NSButton }
-+    XCTAssertTrue(buttons.contains { $0.attributedTitle.string.contains("아메리카합중국") })
++    XCTAssertTrue(buttons.contains { $0.attributedTitle.string.contains("미국") })
++    XCTAssertFalse(buttons.contains { $0.attributedTitle.string.contains("아메리카합중국") })
 +  }
 +
 +  func testDelayedWebViewGeometryRecoversAfterInitialRetryBudget() throws {
@@ -1225,6 +1236,17 @@ new file mode 100644
 +    }
 +  }
 +
++  func testNaverFirstActuallyShowsDefinitionPanel() {
++    Configuration.shared.set(HanjaIMEDictionaryPriority.naverFirst.rawValue, forKey: HanjaIMEDictionaryPriority.key)
++    app.inputKeys("durtk")
++    let ui = InputMethodServer.shared.hanjaPanel
++    let session = app.controller.receiver.composer.hanjaComposer.session
++    ui.previewDefinition(index: 0, generation: session.generation)
++    XCTAssertTrue(ui.isDefinitionVisible, "Naver-first must order its panel front")
++    XCTAssertFalse(ui.panel.canBecomeKey)
++    ui.hide()
++  }
++
 +  func testDictionaryPreviewLeavesAndClosesWithCandidateWindow() {
 +    app.inputKeys("durtk")
 +    let ui = InputMethodServer.shared.hanjaPanel
@@ -1494,6 +1516,23 @@ new file mode 100644
 +    XCTAssertFalse(ui.isVisible)
 +    XCTAssertFalse(ui.isDefinitionVisible)
 +    NSLog("HanjaIME floating regression: complete")
++  }
++
++  func testLateDeactivationDoesNotDismissNewContextCandidates() {
++    app.inputKeys("skfTl")
++    let old = app.controller
++    let next = ModerateApp()
++    next.controller.receiver.composer = GureumComposer(usage: usage)
++    InputMethodServer.shared.activeController = next.controller
++    next.inputKeys("durtk")
++    XCTAssertTrue(InputMethodServer.shared.hanjaPanel.isVisible)
++    old.deactivateInputContext(app.client)
++    XCTAssertTrue(InputMethodServer.shared.activeController === next.controller)
++    XCTAssertTrue(InputMethodServer.shared.hanjaPanel.isVisible)
++    InputMethodServer.shared.showOrHideCandidates(controller: old)
++    XCTAssertTrue(InputMethodServer.shared.activeController === next.controller)
++    XCTAssertTrue(InputMethodServer.shared.hanjaPanel.isVisible)
++    next.controller.deactivateInputContext(next.client)
 +  }
 +
 +}
@@ -5882,7 +5921,7 @@ j{kc#|arEfXC5!nD0IpwpfUj)Z00000NkvXXu0mjf`X#uZ
 diff --git a/OSX/ConfigurationWindow.swift b/OSX/ConfigurationWindow.swift
 --- a/OSX/ConfigurationWindow.swift
 +++ b/OSX/ConfigurationWindow.swift
-@@ -1,71 +1,406 @@
+@@ -1,71 +1,420 @@
 -//
 -//  ConfigurationWindow.swift
 -//  OSX
@@ -5903,11 +5942,11 @@ diff --git a/OSX/ConfigurationWindow.swift b/OSX/ConfigurationWindow.swift
 +enum HanjaIMELinks {
 +  static let repository = "https://github.com/akinoyuki0411/HanjaIME-"
 +  static func open(_ suffix: String = "") { NSWorkspace.shared.open(URL(string: repository + suffix)!) }
-+  static func mail() { NSWorkspace.shared.open(URL(string: "mailto:akinoyuki0122@gmail.com")!) }
++  static func mail() { NSWorkspace.shared.open(URL(string: "https://github.com/akinoyuki0411/HanjaIME-/issues")!) }
 +  static func support() {
 +    let alert = NSAlert()
 +    alert.messageText = L("한지미 후원", "Support HanjaIME", "HanjaIMEを支援")
-+    alert.informativeText = L("후원 페이지를 준비 중입니다. 현재 결제는 받지 않습니다. 문의: akinoyuki0122@gmail.com", "A support page is being prepared. Payments are not accepted yet. Contact: akinoyuki0122@gmail.com", "支援ページを準備中です。現在、支払いは受け付けていません。連絡先: akinoyuki0122@gmail.com")
++    alert.informativeText = L("후원 페이지를 준비 중입니다. 현재 결제는 받지 않습니다. 문의: GitHub Issues", "A support page is being prepared. Payments are not accepted yet. Contact: GitHub Issues", "支援ページを準備中です。現在、支払いは受け付けていません。連絡先: GitHub Issues")
 +    alert.addButton(withTitle: "OK"); alert.runModal()
 +  }
 +}
@@ -5949,6 +5988,11 @@ diff --git a/OSX/ConfigurationWindow.swift b/OSX/ConfigurationWindow.swift
 +      self.objectWillChange.send(); self.configuration.set($0, forKey: key)
 +    })
 +  }
++  func stringBinding(_ key: String, fallback: String) -> Binding<String> {
++    Binding(get: { self.configuration.string(forKey: key) ?? fallback }, set: {
++      self.objectWillChange.send(); self.configuration.set($0, forKey: key)
++    })
++  }
 +}
 +final class HanjaIMEPreferencesWindowController: NSWindowController {
 +  private let model: HanjaIMESettingsModel
@@ -5957,7 +6001,7 @@ diff --git a/OSX/ConfigurationWindow.swift b/OSX/ConfigurationWindow.swift
 +  init(configuration: Configuration) {
 +    model = HanjaIMESettingsModel(configuration)
 +    let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 660, height: 490), styleMask: [.titled, .closable, .miniaturizable, .resizable], backing: .buffered, defer: false)
-+    window.title = L("한지미 설정", "HanjaIME Settings", "HanjaIME 設定")
++    window.title = L("한지미 입력기 설정", "HanjaIME Input Settings", "HanjaIME 入力設定")
 +    window.minSize = NSSize(width: 660, height: 430)
 +    window.titlebarAppearsTransparent = true; window.isReleasedWhenClosed = false; window.center()
 +    super.init(window: window)
@@ -5970,7 +6014,7 @@ diff --git a/OSX/ConfigurationWindow.swift b/OSX/ConfigurationWindow.swift
 +    }.store(in: &subscriptions)
 +    model.$language.dropFirst().sink { [weak self] language in
 +      HanjaIMEInterface.language = language
-+      self?.window?.title = L("한지미 설정", "HanjaIME Settings", "HanjaIME 設定")
++      self?.window?.title = L("한지미 입력기 설정", "HanjaIME Input Settings", "HanjaIME 入力設定")
 +      self?.changelog?.close(); self?.changelog = nil
 +    }.store(in: &subscriptions)
 +  }
@@ -6079,13 +6123,22 @@ diff --git a/OSX/ConfigurationWindow.swift b/OSX/ConfigurationWindow.swift
 +        key("Enter", L("현재 내용 확정", "Commit text", "入力を確定"))
 +        key("Shift + Space", L("한글 유지하고 공백", "Keep Hangul and add a space", "ハングルのまま空白を入力"))
 +        key("Esc", L("변환 취소", "Cancel conversion", "変換をキャンセル"))
-+        Text(L("한/영 전환은 macOS 입력 소스 단축키를 사용하세요. Option은 옛한글 입력에 사용합니다.", "Use the macOS input-source shortcut to switch languages. Option is used for old Hangul.", "言語切替にはmacOSの入力ソース切替キーを使います。Optionは古ハングル入力に使用します。")).foregroundColor(.secondary)
++        Text(L("Caps Lock은 macOS가 ABC 입력 소스로 넘길 수 있습니다. 한글로 돌아오지 않으면 입력 메뉴에서 HanjaIME 두벌식을 다시 선택하세요.", "Caps Lock can move macOS to ABC. If Korean does not return, select HanjaIME 2-set again from the input menu.", "Caps LockでmacOSがABCへ切り替える場合があります。戻らないときは入力メニューでHanjaIME 2-setを選び直してください。")).foregroundColor(.secondary)
++      }
++      Card(L("맞춤법", "Spelling", "スペルチェック")) {
++        Toggle(L("입력 보조 맞춤법 검사 사용", "Enable spelling assistance", "入力補助の校正を使う"), isOn: model.binding("HanjaIME.SpellcheckEnabled"))
++        Text(L("다음 버전에서 후보를 다듬는 보조 기능으로 연결합니다. 한문·한자어는 붙여 쓰는 관례를 별도 규칙으로 처리합니다.", "This will be connected to candidate cleanup in a later version. Hanja compounds will use their own spacing rules.", "次の版で候補補正に接続します。漢文・漢字語は別の分かち書き規則で扱います。")).foregroundColor(.secondary)
 +      }
 +    case .words:
 +      Text(L("개인 단어 · 이 Mac에만 저장됩니다", "My Words · stored only on this Mac", "ユーザー辞書 · このMacにのみ保存")).font(.headline)
 +      WordSettings().id(model.language).frame(minHeight: 460).modifier(Glass())
 +    case .dictionary:
 +      Card(L("뜻풀이 연결", "Definitions", "意味を調べる")) {
++        Picker(L("사전 우선순위", "Dictionary priority", "辞書の優先順位"), selection: model.stringBinding(HanjaIMEDictionaryPriority.key, fallback: HanjaIMEDictionaryPriority.appleThenNaver.rawValue)) {
++          Text(L("Apple 먼저, 없으면 네이버", "Apple first, then Naver", "Apple優先、なければNAVER")).tag(HanjaIMEDictionaryPriority.appleThenNaver.rawValue)
++          Text(L("네이버 먼저", "Naver first", "NAVER優先")).tag(HanjaIMEDictionaryPriority.naverFirst.rawValue)
++          Text(L("Apple만", "Apple only", "Appleのみ")).tag(HanjaIMEDictionaryPriority.appleOnly.rawValue)
++        }.pickerStyle(.segmented)
 +        Toggle(L("Apple 사전에 없으면 네이버 사전 연결", "Use Naver when Apple Dictionary has no result", "Apple辞書にない場合はNAVER辞書を使用"), isOn: model.binding("HanjaIME.NaverFallback", fallback: true))
 +        Text(L("후보의 책 버튼을 눌렀을 때 선택한 검색어만 네이버로 전송합니다. 입력 문장과 개인 단어 목록은 전송하지 않습니다.", "Only the selected term is sent to Naver when you open a definition. Your sentence and personal word list are not sent.", "意味を開くと、選択した語だけをNAVERへ送信します。入力中の文章やユーザー辞書は送信しません。"))
 +        Text(L("일본어 신자체는 일본어사전, 한자는 한자사전에서 찾습니다. 온라인 사전은 인터넷 연결이 필요합니다.", "Japanese forms use the Japanese dictionary; Hanja uses the Hanja dictionary. Online lookup requires an internet connection.", "日本の字体は日本語辞書、漢字は漢字辞書で検索します。オンライン検索にはインターネット接続が必要です。")).foregroundColor(.secondary)
@@ -6361,7 +6414,7 @@ diff --git a/OSX/ConfigurationWindow.swift b/OSX/ConfigurationWindow.swift
 diff --git a/OSX/GureumAppDelegate.swift b/OSX/GureumAppDelegate.swift
 --- a/OSX/GureumAppDelegate.swift
 +++ b/OSX/GureumAppDelegate.swift
-@@ -1,88 +1,53 @@
+@@ -1,88 +1,66 @@
 -//
 -//  GureumAppDelegate.swift
 -//  Gureum
@@ -6408,7 +6461,7 @@ diff --git a/OSX/GureumAppDelegate.swift b/OSX/GureumAppDelegate.swift
 -  let configuration = Configuration.shared
 -  let notificationCenterDelegate = NotificationCenterDelegate()
 +  func applicationDidFinishLaunching(_: Notification) {
-+    _ = InputMethodServer.shared
++    if !CommandLine.arguments.contains("--settings") { _ = InputMethodServer.shared }
 +    // Use macOS input-source switching instead of Gureum's global Caps Lock monitor.
 +    HanjaIMEControls.prepare()
 +    rebuildMenu()
@@ -6427,7 +6480,15 @@ diff --git a/OSX/GureumAppDelegate.swift b/OSX/GureumAppDelegate.swift
 -  func applicationDidFinishLaunching(_: Notification) {
 -    FirebaseApp.configure()
 -    UserDefaults.standard.register(defaults: ["NSApplicationCrashOnExceptions": true])
--
++  @objc private func rebuildMenu() {
++    if menu == nil { menu = NSMenu(title: "HanjaIME") }
++    menu.removeAllItems()
++    addItem(L("한지미 정보", "About HanjaIME", "HanjaIMEについて"), "showStandardAboutPanel:", to: menu)
++    addItem(L("환경설정…", "Settings…", "設定…"), "showPreferencesWindow:", to: menu)
++    addItem(L("새 버전 확인…", "Check for Updates…", "アップデートを確認…"), "checkRecentVersion:", to: menu)
++    addItem(L("변경 내역 보기…", "What's New…", "変更履歴…"), "showHanjaIMEChangelog:", to: menu)
++    menu.addItem(.separator())
+ 
 -    NSUserNotificationCenter.default.delegate = notificationCenterDelegate
 -    let notificationCenter = NSUserNotificationCenter.default
 -    #if DEBUG
@@ -6442,32 +6503,31 @@ diff --git a/OSX/GureumAppDelegate.swift b/OSX/GureumAppDelegate.swift
 -    #else
 -      // Fabric.with([Crashlytics.self, Answers.self])
 -    #endif
--
++    let web = NSMenu(title: L("웹과 문의", "Web & Contact", "Webと連絡"))
++    addItem(L("웹사이트…", "Website…", "ウェブサイト…"), "openWebsite:", to: web)
++    addItem(L("도움말…", "Help…", "ヘルプ…"), "openWebsiteHelp:", to: web)
++    addItem(L("버그 알리기…", "Report a Bug…", "不具合を報告…"), "openWebsiteIssues:", to: web)
++    addItem(L("소스코드…", "Source Code…", "ソースコード…"), "openWebsiteSource:", to: web)
++    addItem(L("이메일…", "Email…", "メール…"), "openHanjaIMEEmail:", to: web)
++    addItem(L("후원하기…", "Support…", "支援する…"), "openWebsiteDonation:", to: web)
++    addSubmenu(web, title: L("웹사이트와 문의", "Website & Contact", "ウェブサイトと連絡"), to: menu)
+ 
 -    UpdateManager.shared.notifyUpdateIfNeeded()
--
++    let tools = NSMenu(title: L("한지미 도구", "HanjaIME Tools", "HanjaIMEツール"))
++    addItem(L("자동 후보 켜기/끄기", "Toggle Automatic Candidates", "自動候補を切り替え"), "toggleAutomaticHanja:", to: tools)
++    addItem(L("오픈소스 고지…", "Open-source Notices…", "オープンソース表記…"), "showOpenSourceNotices:", to: tools)
++    addSubmenu(tools, title: L("도구", "Tools", "ツール"), to: menu)
++    // Standard system input switching works without asking for input monitoring at launch.
++  }
+ 
 -    // 입력 모니터링 권한 요청
 -    if #available(macOS 10.15, *) {
 -      IOHIDRequestAccess(kIOHIDRequestTypeListenEvent)
-+  @objc private func rebuildMenu() {
-+    if menu == nil { menu = NSMenu(title: "HanjaIME") }
-+    menu.removeAllItems()
-+    for (title, action) in [
-+      (L("한지미 정보", "About HanjaIME", "HanjaIMEについて"), "showStandardAboutPanel:"),
-+      (L("환경설정…", "Settings…", "設定…"), "showPreferencesWindow:"),
-+      (L("새 버전 확인…", "Check for Updates…", "アップデートを確認…"), "checkRecentVersion:"),
-+      (L("변경 내역 보기…", "What's New…", "変更履歴…"), "showHanjaIMEChangelog:"),
-+      (L("웹사이트…", "Website…", "ウェブサイト…"), "openWebsite:"),
-+      (L("도움말…", "Help…", "ヘルプ…"), "openWebsiteHelp:"),
-+      (L("버그 알리기…", "Report a Bug…", "不具合を報告…"), "openWebsiteIssues:"),
-+      (L("소스코드…", "Source Code…", "ソースコード…"), "openWebsiteSource:"),
-+      (L("이메일…", "Email…", "メール…"), "openHanjaIMEEmail:"),
-+      (L("후원하기…", "Support…", "支援する…"), "openWebsiteDonation:"),
-+      (L("자동 후보 켜기/끄기", "Toggle Automatic Candidates", "自動候補を切り替え"), "toggleAutomaticHanja:"),
-+      (L("오픈소스 고지…", "Open-source Notices…", "オープンソース表記…"), "showOpenSourceNotices:"),
-+    ] {
-+      menu.addItem(NSMenuItem(title: title, action: Selector(action), keyEquivalent: ""))
-     }
--
+-    }
++  private func addItem(_ title: String, _ action: String, to menu: NSMenu) {
++    menu.addItem(NSMenuItem(title: title, action: Selector(action), keyEquivalent: ""))
++  }
+ 
 -    // IMKServer를 띄워야만 입력기가 동작한다
 -    _ = InputMethodServer.shared
 -
@@ -6482,7 +6542,10 @@ diff --git a/OSX/GureumAppDelegate.swift b/OSX/GureumAppDelegate.swift
 -    // }
 -
 -    watcher.reloadConfiguration()
-+    // Standard system input switching works without asking for input monitoring at launch.
++  private func addSubmenu(_ submenu: NSMenu, title: String, to menu: NSMenu) {
++    let item = NSMenuItem(title: title, action: nil, keyEquivalent: "")
++    item.submenu = submenu
++    menu.addItem(item)
    }
 +  func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows: Bool) -> Bool {
 +    preferencesWindow.showWindow(nil)
@@ -6943,17 +7006,17 @@ diff --git a/OSX/Info.plist b/OSX/Info.plist
  	<key>CFBundleInfoDictionaryVersion</key>
  	<string>6.0</string>
 +	<key>CFBundleName</key>
-+	<string>HanjaIME 0.9.4</string>
++	<string>HanjaIME 0.9.7</string>
  	<key>CFBundlePackageType</key>
  	<string>APPL</string>
  	<key>CFBundleShortVersionString</key>
 -	<string>${VERSION}</string>
-+	<string>0.9.4</string>
++	<string>0.9.8</string>
  	<key>CFBundleSignature</key>
  	<string>yno1</string>
  	<key>CFBundleVersion</key>
 -	<string>${VERSION}</string>
-+	<string>27</string>
++	<string>34</string>
  	<key>ComponentInputModeDict</key>
  	<dict>
  		<key>tsInputModeListKey</key>
@@ -7659,6 +7722,33 @@ diff --git a/OSX/ko.lproj/InfoPlist.strings b/OSX/ko.lproj/InfoPlist.strings
 +CFBundleDisplayName = "HanjaIME";
 +CFBundleName = "HanjaIME";
 +org.hanjaime.inputmethod.HanjaIME.han2 = "HanjaIME 두벌식";
+diff --git a/OSX/main.swift b/OSX/main.swift
+--- a/OSX/main.swift
++++ b/OSX/main.swift
+@@ -12,8 +12,22 @@
+ 
+ let mainNibName = Bundle.main.infoDictionary!["NSMainNibFile"] as! String
+ let nib = NSNib(nibNamed: NSNib.Name(mainNibName), bundle: Bundle.main)!
+-if nib.instantiate(withOwner: NSApplication.shared, topLevelObjects: nil) == false {
++// Keep the nib delegate alive: NSApplication.delegate is a weak reference.
++var mainNibObjects: NSArray?
++if nib.instantiate(withOwner: NSApplication.shared, topLevelObjects: &mainNibObjects) == false {
+   dlog(true, "!! Gureum fails to load Main Nib File !!")
++}
++
++if let delegate = mainNibObjects?.compactMap({ $0 as? GureumAppDelegate }).first {
++  NSApplication.shared.delegate = delegate
++}
++
++if CommandLine.arguments.contains("--settings") {
++  NSApplication.shared.setActivationPolicy(.regular)
++  DispatchQueue.main.async {
++    preferencesWindow.showWindow(nil)
++    NSApplication.shared.activate(ignoringOtherApps: true)
++  }
+ }
+ 
+ dlog(true, "****   Main bundle \(mainNibName) loaded   ****")
 diff --git a/OSXCore/Configuration.swift b/OSXCore/Configuration.swift
 --- a/OSXCore/Configuration.swift
 +++ b/OSXCore/Configuration.swift
@@ -8293,7 +8383,7 @@ diff --git a/OSXCore/HanjaIMECandidatePanel.swift b/OSXCore/HanjaIMECandidatePan
 new file mode 100644
 --- /dev/null
 +++ b/OSXCore/HanjaIMECandidatePanel.swift
-@@ -0,0 +1,617 @@
+@@ -0,0 +1,624 @@
 +import Cocoa
 +import WebKit
 +import CoreServices
@@ -8396,7 +8486,10 @@ new file mode 100644
 +  }
 +
 +  static func annotation(for candidate: HanjaIMECandidate, reading: String) -> String {
-+    candidate.annotation.isEmpty ? (candidate.sourceReading ?? reading) : candidate.annotation
++    if candidate.kind == .hanja || candidate.kind == .japanese {
++      return candidate.sourceReading ?? reading
++    }
++    return candidate.annotation.isEmpty ? (candidate.sourceReading ?? reading) : candidate.annotation
 +  }
 +
 +  private static func label(_ text: String, frame: NSRect, size: CGFloat = 12) -> NSTextField {
@@ -8559,7 +8652,7 @@ new file mode 100644
 +        button.onHover = { [weak self] rowButton in self?.hoverDefinition(rowButton) }
 +        button.onLeave = { [weak self] in self?.checkPointer(NSEvent.mouseLocation) }
 +        row.addSubview(button)
-+        let annotation = Self.label("\(candidate.sourceReading ?? session.candidateReading)  \(candidate.annotation)",
++        let annotation = Self.label(Self.annotation(for: candidate, reading: session.candidateReading),
 +          frame: NSRect(x: 27, y: 1, width: 215, height: 12), size: 10)
 +        annotation.textColor = selected ? .white : .secondaryLabelColor
 +        button.toolTip = annotation.stringValue
@@ -8571,7 +8664,7 @@ new file mode 100644
 +          book.frame = NSRect(x: size.width - 32, y: 2, width: 23, height: 21)
 +          book.isBordered = false
 +          book.contentTintColor = selected ? .white : .labelColor
-+          book.toolTip = "\(candidate.sourceValue ?? candidate.value) — Apple 사전 뜻풀이"
++          book.toolTip = "\(candidate.sourceValue ?? candidate.value) — 뜻풀이"
 +          book.onHover = { [weak self] button in self?.hoverDefinition(button) }
 +          book.onLeave = { [weak self] in self?.checkPointer(NSEvent.mouseLocation) }
 +          row.addSubview(book)
@@ -8679,7 +8772,7 @@ new file mode 100644
 +  private func positionDefinition(on visible: NSRect? = nil) {
 +    guard let area = visible ?? anchorScreen?.visibleFrame.insetBy(dx: 2, dy: 2) else { return }
 +    definitionPanel.setFrame(HanjaIMEPanelLayout.definition(candidate: panel.frame,
-+      size: naverView == nil ? NSSize(width: 280, height: 220) : NSSize(width: 420, height: 560), visible: area), display: true)
++      size: NSSize(width: 280, height: 220), visible: area), display: true)
 +  }
 +
 +  private func current(_ button: HanjaIMERowButton) -> (InputController, HanjaIMEComposer)? {
@@ -8773,6 +8866,11 @@ new file mode 100644
 +    let size = definitionPanel.frame.size
 +    guard size.height >= 80 else { closeDefinition(); return }
 +    let content = Self.background(size: size)
++    let priority = HanjaIMEDictionaryPriority.current
++    if priority == .naverFirst {
++      showNaverDefinition(request)
++      return
++    }
 +    let dictionaryLabel = request.prefersJapaneseDictionary ? "일본어 사전 우선" : "한국어 사전 우선"
 +    let title = Self.label(request.term + "  [" + request.reading + "] · " + dictionaryLabel,
 +      frame: NSRect(x: 10, y: size.height - 30, width: size.width - 20, height: 22), size: 13)
@@ -8822,7 +8920,7 @@ new file mode 100644
 +        guard let self = self, self.requestID == token, self.shownDefinition == request,
 +          self.panel.isVisible, self.definitionPanel.isVisible else { return }
 +        self.definitionText?.string = body
-+        if result == nil,
++        if result == nil, priority.usesNaver,
 +          Configuration.shared.object(forKey: "HanjaIME.NaverFallback") as? Bool ?? true {
 +          self.showNaverDefinition(request)
 +        }
@@ -8837,85 +8935,84 @@ new file mode 100644
 +    web.frame = NSRect(origin: .zero, size: definitionPanel.frame.size)
 +    web.autoresizingMask = [.width, .height]
 +    definitionPanel.contentView = web
++    if definitionPanel.parent == nil { panel.addChildWindow(definitionPanel, ordered: .above) }
++    definitionPanel.orderFrontRegardless()
 +    web.start()
 +  }
 +
 +}
 +
-+/// Official dictionary page, with an ephemeral store; no scraping or copied definitions.
-+private final class HanjaIMENaverDefinitionView: NSView, WKNavigationDelegate {
-+  private let url: URL
-+  private let web: WKWebView
-+  private let status = NSTextField(labelWithString: "네이버 사전 연결 중…")
-+  private var timeout: DispatchWorkItem?
-+  init(url: URL) {
-+    self.url = url
-+    let config = WKWebViewConfiguration()
-+    config.websiteDataStore = .nonPersistent()
-+    web = WKWebView(frame: .zero, configuration: config)
-+    super.init(frame: NSRect(x: 0, y: 0, width: 420, height: 440))
-+    wantsLayer = true
-+    layer?.backgroundColor = NSColor.windowBackgroundColor.cgColor
-+    layer?.cornerRadius = 8
-+    layer?.masksToBounds = true
-+    status.font = .systemFont(ofSize: 11)
-+    status.textColor = .secondaryLabelColor
-+    status.maximumNumberOfLines = 2
-+    let open = NSButton(title: "브라우저에서 열기", target: self, action: #selector(openBrowser))
-+    open.bezelStyle = .rounded
-+    for child in [web, status, open] { child.translatesAutoresizingMaskIntoConstraints = false; addSubview(child) }
-+    NSLayoutConstraint.activate([
-+      status.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-+      status.topAnchor.constraint(equalTo: topAnchor, constant: 8),
-+      status.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
-+      status.heightAnchor.constraint(equalToConstant: 34),
-+      web.topAnchor.constraint(equalTo: status.bottomAnchor, constant: 4),
-+      web.leadingAnchor.constraint(equalTo: leadingAnchor), web.trailingAnchor.constraint(equalTo: trailingAnchor),
-+      web.bottomAnchor.constraint(equalTo: open.topAnchor, constant: -6),
-+      open.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8), open.centerXAnchor.constraint(equalTo: centerXAnchor),
-+    ])
-+    // Request the provider's own compact mobile layout for the small definition panel.
-+    web.customUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1"
-+    web.navigationDelegate = self
-+  }
-+  required init?(coder: NSCoder) { fatalError("Use init") }
-+  func start() {
-+    web.load(URLRequest(url: url, timeoutInterval: 15))
-+    let item = DispatchWorkItem { [weak self] in
-+      guard let self else { return }
-+      self.web.stopLoading()
-+      self.status.stringValue = "연결이 지연됩니다. 인터넷을 확인하거나 브라우저에서 열어 주세요."
++final class HanjaIMENaverDefinitionView: NSView, WKNavigationDelegate {
++    private static let cache:NSCache<NSString,NSString> = {let cache=NSCache<NSString,NSString>();cache.countLimit=64;return cache}()
++    private let url:URL
++    private let web:WKWebView
++    private let body=NSTextView()
++    private var retry:DispatchWorkItem?
++    private var stopped=false
++    private var extracting=false
++    private var attempts=0
++    init(url:URL) {
++        self.url=url
++        let config=WKWebViewConfiguration();config.websiteDataStore = .nonPersistent()
++        web=WKWebView(frame:NSRect(x:0,y:0,width:640,height:600),configuration:config)
++        super.init(frame:NSRect(x:0,y:0,width:280,height:220))
++        wantsLayer=true;layer?.cornerRadius=7;layer?.masksToBounds=true;layer?.backgroundColor=NSColor.windowBackgroundColor.cgColor
++        let title=NSTextField(labelWithString:"네이버 사전 · NAVER");title.font = .systemFont(ofSize:11);title.textColor = .secondaryLabelColor
++        let scroll=NSScrollView();scroll.hasVerticalScroller=true;scroll.drawsBackground=false
++        body.frame=NSRect(x:0,y:0,width:260,height:160);body.autoresizingMask=[.width];body.isEditable=false;body.isSelectable=true;body.drawsBackground=false;body.font = .systemFont(ofSize:12);body.textColor = .labelColor;body.isVerticallyResizable=true;body.isHorizontallyResizable=false;body.textContainer?.widthTracksTextView=true;body.textContainerInset=NSSize(width:2,height:3)
++        body.string="뜻을 찾는 중…";scroll.documentView=body
++        let open=NSButton(title:"네이버에서 자세히 보기",target:self,action:#selector(openBrowser));open.bezelStyle = .rounded;open.controlSize = .small
++        for child in [title,scroll,open] {child.translatesAutoresizingMaskIntoConstraints=false;addSubview(child)}
++        NSLayoutConstraint.activate([title.leadingAnchor.constraint(equalTo:leadingAnchor,constant:10),title.topAnchor.constraint(equalTo:topAnchor,constant:8),title.trailingAnchor.constraint(equalTo:trailingAnchor,constant:-10),title.heightAnchor.constraint(equalToConstant:18),scroll.leadingAnchor.constraint(equalTo:leadingAnchor,constant:8),scroll.trailingAnchor.constraint(equalTo:trailingAnchor,constant:-8),scroll.topAnchor.constraint(equalTo:title.bottomAnchor,constant:5),scroll.bottomAnchor.constraint(equalTo:open.topAnchor,constant:-5),open.centerXAnchor.constraint(equalTo:centerXAnchor),open.bottomAnchor.constraint(equalTo:bottomAnchor,constant:-7)])
++        web.isHidden=true;addSubview(web);web.navigationDelegate=self
 +    }
-+    timeout = item
-+    DispatchQueue.main.asyncAfter(deadline: .now() + 15, execute: item)
-+  }
-+  func stop() { timeout?.cancel(); timeout = nil; web.stopLoading(); web.navigationDelegate = nil }
-+  @objc private func openBrowser() { NSWorkspace.shared.open(url) }
-+  func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-+    timeout?.cancel()
-+    status.stringValue = "네이버 사전 · NAVER 제공\n검색어만 전송됩니다. 자동 연결은 설정에서 끌 수 있습니다."
-+  }
-+  func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) { failed(error) }
-+  func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) { failed(error) }
-+  private func failed(_ error: Error) {
-+    guard (error as NSError).code != NSURLErrorCancelled else { return }
-+    timeout?.cancel()
-+    status.stringValue = "네이버 사전을 열지 못했습니다. 인터넷을 확인하거나 브라우저에서 열어 주세요."
-+  }
-+  func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
-+    decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-+    guard let target = navigationAction.request.url, HanjaIMEDictionaryLink.isAllowed(target) else {
-+      decisionHandler(.cancel); return
++    required init?(coder:NSCoder) {fatalError("Use init")}
++    func start() {
++        if let cached=Self.cache.object(forKey:url.absoluteString as NSString) {body.string=cached as String;return}
++        web.load(URLRequest(url:url,timeoutInterval:12))
++        let work=DispatchWorkItem { [weak self] in self?.extract() };retry=work;DispatchQueue.main.asyncAfter(deadline:.now()+0.5,execute:work)
 +    }
-+    if navigationAction.targetFrame == nil { webView.load(navigationAction.request); decisionHandler(.cancel) }
-+    else { decisionHandler(.allow) }
-+  }
++    func stop() {stopped=true;retry?.cancel();web.stopLoading();web.navigationDelegate=nil}
++    @objc private func openBrowser() {NSWorkspace.shared.open(url)}
++    private func extract() {
++        guard !stopped,!extracting else{return};extracting=true;attempts += 1
++        let script="""
++        (() => {
++          const query=new URLSearchParams(location.hash.split('?')[1]||'').get('query')||'';
++          const letter=location.hostname==='hanja.dict.naver.com' && Array.from(query).length===1 ? document.querySelector('#searchPage_letter .row') : null;
++          const row=letter || document.querySelector('#searchPage_entry .row') || document.querySelector('#searchPage_hanja .row') || document.querySelector('#searchPage_word .row');
++          if(!row) return null;
++          const clean=s=>(s||'').replace(/\\s+/g,' ').trim();
++          const origin=row.querySelector('.origin .link');
++          const kanji=row.querySelector('.origin ._kanji');
++          const meaning=row.querySelector('.mean_list') || row.querySelector('.entry_mean');
++          const source=row.querySelector('.source');
++          if(!meaning || !clean(meaning.innerText)) return null;
++          return [(clean(origin?.innerText)||query)+' '+clean(kanji?.innerText),clean(meaning.innerText).slice(0,600),clean(source?.innerText)].filter(Boolean).join('\\n\\n');
++        })()
++        """
++        web.evaluateJavaScript(script) { [weak self] value,error in
++            guard let self,!self.stopped else{return};self.extracting=false
++            if let text=value as? String,!text.isEmpty {
++                self.body.string=text;Self.cache.setObject(text as NSString,forKey:self.url.absoluteString as NSString);self.retry?.cancel();self.stopped=true;self.web.stopLoading();return
++            }
++            if self.attempts>=24 {self.body.string="뜻풀이를 불러오지 못했습니다. 아래 버튼으로 네이버 사전에서 확인해 주세요.";self.web.stopLoading();return}
++            let work=DispatchWorkItem { [weak self] in self?.extract() };self.retry=work;DispatchQueue.main.asyncAfter(deadline:.now()+0.5,execute:work)
++        }
++    }
++    func webView(_ webView:WKWebView,didFinish navigation:WKNavigation!) {extract()}
++    func webView(_ webView:WKWebView,didFailProvisionalNavigation navigation:WKNavigation!,withError error:Error) {
++        guard !stopped,(error as NSError).code != NSURLErrorCancelled else{return};body.string="네이버 연결이 지연됩니다. 아래 버튼으로 직접 확인해 주세요."
++    }
++    func webView(_ webView:WKWebView,decidePolicyFor action:WKNavigationAction,decisionHandler:@escaping(WKNavigationActionPolicy)->Void) {
++        guard let url=action.request.url,url.scheme=="https",let host=url.host,host=="dict.naver.com" || host.hasSuffix(".dict.naver.com") else {decisionHandler(.cancel);return};decisionHandler(.allow)
++    }
 +}
 diff --git a/OSXCore/HanjaIMEComposer.swift b/OSXCore/HanjaIMEComposer.swift
 new file mode 100644
 --- /dev/null
 +++ b/OSXCore/HanjaIMEComposer.swift
-@@ -0,0 +1,503 @@
+@@ -0,0 +1,506 @@
 +import Cocoa
 +import Carbon
 +import Hangul
@@ -9016,6 +9113,9 @@ new file mode 100644
 +    session = HanjaIMESession(hangul: hangul, usage: usage,
 +      predict: dictionary.predictions) {
 +      dictionary.lookup($0)
++    }
++    session.onCandidateAccepted = { reading, candidate in
++      HanjaIMENotchBridge.candidateSelected(reading: reading, candidate: candidate)
 +    }
 +  }
 +
@@ -9423,7 +9523,7 @@ diff --git a/OSXCore/HanjaIMECore.swift b/OSXCore/HanjaIMECore.swift
 new file mode 100644
 --- /dev/null
 +++ b/OSXCore/HanjaIMECore.swift
-@@ -0,0 +1,12056 @@
+@@ -0,0 +1,12119 @@
 +import Foundation
 +#if canImport(CoreGraphics)
 +import CoreGraphics
@@ -9538,6 +9638,22 @@ new file mode 100644
 +    self.annotation = candidate.annotation
 +    self.prefersJapaneseDictionary = candidate.kind == .japanese
 +  }
++}
++
++public enum HanjaIMEDictionaryPriority: String, CaseIterable {
++  case appleThenNaver
++  case naverFirst
++  case appleOnly
++
++  public static let key = "HanjaIME.DictionaryPriority"
++
++  public static var current: HanjaIMEDictionaryPriority {
++    let raw = UserDefaults(suiteName: HanjaIMEStorage.preferencesDomain)?.string(forKey: key)
++    return raw.flatMap(HanjaIMEDictionaryPriority.init(rawValue:)) ?? .appleThenNaver
++  }
++
++  public var usesApple: Bool { self != .naverFirst }
++  public var usesNaver: Bool { self != .appleOnly }
 +}
 +
 +enum HanjaIMEDictionaryLink {
@@ -10140,6 +10256,8 @@ new file mode 100644
 +    selectionEngaged = false
 +    candidates = layoutCandidates.filter(category.accepts)
 +  }
++  // Optional observer: the keyboard session remains functional with no agent or callback.
++  var onCandidateAccepted: ((String, String) -> Void)?
 +  var automaticCandidates = true
 +  var reading: String { buffered + hangul.composedString }
 +  // Punctuation and spaces stay inside the marked-text session.  Conversion
@@ -10267,11 +10385,13 @@ new file mode 100644
 +    guard expected == nil || expected == generation, !candidateReading.isEmpty, reading.hasSuffix(candidateReading),
 +      candidates.indices.contains(index) else { return false }
 +    let candidate = candidates[index]
++    let acceptedReading = candidateReading
 +    usage.record(reading: candidate.sourceReading ?? candidateReading, value: candidate.sourceValue ?? candidate.value)
 +    commitString += String(reading.dropLast(candidateReading.count)) + candidate.value
 +    buffered = ""
 +    hangul.clearCompositionContext()
 +    invalidateCandidates()
++    if candidate.kind == .hanja || candidate.kind == .japanese { onCandidateAccepted?(acceptedReading, candidate.value) }
 +    return true
 +  }
 +
@@ -10284,11 +10404,13 @@ new file mode 100644
 +  private func acceptSelectionInline() {
 +    guard selectionEngaged, candidates.indices.contains(selectedIndex), !candidateReading.isEmpty else { return }
 +    let candidate = candidates[selectedIndex]
++    let acceptedReading = candidateReading
 +    usage.record(reading: candidate.sourceReading ?? candidateReading, value: candidate.sourceValue ?? candidate.value)
 +    let replacement = String(reading.dropLast(candidateReading.count)) + candidate.value
 +    hangul.clearCompositionContext()
 +    buffered = replacement
 +    invalidateCandidates()
++    if candidate.kind == .hanja || candidate.kind == .japanese { onCandidateAccepted?(acceptedReading, candidate.value) }
 +  }
 +
 +  private func appendLiteral(_ text: String) {
@@ -21480,6 +21602,47 @@ new file mode 100644
 +힙합	🤘	뿔 모양 손짓
 +"""#
 +}
++
++#if os(macOS)
++/// Nonblocking, coalesced, opt-in notification. This bridge cannot control composition.
++enum HanjaIMENotchBridge {
++  private static let queue = DispatchQueue(label: "org.hanjaime.keyboard.notch", qos: .utility)
++  private static let lock = NSLock()
++  private static var pending: (String, String, Double)?
++  private static var scheduled = false
++  static func candidateSelected(reading: String, candidate: String) {
++    guard !reading.isEmpty, !candidate.isEmpty, reading.count <= 64, candidate.count <= 64,
++      reading.utf8.count <= 512, candidate.utf8.count <= 512,
++      reading.unicodeScalars.allSatisfy({ (0xAC00...0xD7A3).contains($0.value) }),
++      !candidate.unicodeScalars.contains(where: { CharacterSet.controlCharacters.contains($0) }) else { return }
++    lock.lock()
++    pending = (reading, candidate, Date().timeIntervalSince1970)
++    let shouldSchedule = !scheduled
++    scheduled = true
++    lock.unlock()
++    if shouldSchedule { queue.async { drain() } }
++  }
++  private static func drain() {
++    lock.lock(); let event = pending; pending = nil; lock.unlock()
++    if let (reading, candidate, timestamp) = event,
++       Date().timeIntervalSince1970 - timestamp <= 3 {
++      let preferences = UserDefaults(suiteName: "org.hanjaime.notch.preferences")
++      preferences?.synchronize()
++      if preferences?.bool(forKey: "Integrations.ShowHanjaIMEActivity.v2") == true {
++        DistributedNotificationCenter.default().postNotificationName(
++          Notification.Name("org.hanjaime.notch.candidateSelected.v1"), object: nil,
++          userInfo: ["version": 1, "reading": reading, "candidate": candidate, "timestamp": timestamp],
++          deliverImmediately: true)
++      }
++    }
++    lock.lock()
++    let again = pending != nil
++    if !again { scheduled = false }
++    lock.unlock()
++    if again { queue.async { drain() } }
++  }
++}
++#endif
 diff --git a/OSXCore/HanjaIMEStorage.swift b/OSXCore/HanjaIMEStorage.swift
 new file mode 100644
 --- /dev/null
@@ -21527,7 +21690,7 @@ new file mode 100644
 diff --git a/OSXCore/InputController.swift b/OSXCore/InputController.swift
 --- a/OSXCore/InputController.swift
 +++ b/OSXCore/InputController.swift
-@@ -45,7 +45,7 @@
+@@ -45,11 +45,12 @@
    case changeLayout(ChangeLayout, Bool)
  }
  
@@ -21536,7 +21699,12 @@ diff --git a/OSXCore/InputController.swift b/OSXCore/InputController.swift
  public class InputController: IMKInputController {
    var receiver: InputReceiver!
    var lastFlags = NSEvent.ModifierFlags(rawValue: 0)
-@@ -70,6 +70,10 @@
+   var updating = false
++  var inputContextActive = true
+ 
+   override init!(server: IMKServer, delegate: Any!, client inputClient: Any) {
+     super.init(server: server, delegate: delegate, client: inputClient)
+@@ -70,6 +71,10 @@
    }
  
    override public func inputControllerWillClose() {
@@ -21547,7 +21715,7 @@ diff --git a/OSXCore/InputController.swift b/OSXCore/InputController.swift
      super.inputControllerWillClose()
    }
  
-@@ -126,26 +130,6 @@
+@@ -126,26 +131,6 @@
          event, event.keyCode, event.modifierFlags.rawValue, event.characters ?? "(empty)",
          event.charactersIgnoringModifiers ?? "(empty)",
          client.bundleIdentifier() ?? "(no client bundle)")
@@ -21574,7 +21742,7 @@ diff --git a/OSXCore/InputController.swift b/OSXCore/InputController.swift
  
        let result = receiver.input(
          text: event.characters, key: keyCode, modifiers: event.modifierFlags, client: client)
-@@ -160,23 +144,16 @@
+@@ -160,23 +145,16 @@
        lastFlags = event.modifierFlags
  
        if changed.contains(.capsLock), Configuration.shared.enableCapslockToToggleInputMode {
@@ -21608,7 +21776,7 @@ diff --git a/OSXCore/InputController.swift b/OSXCore/InputController.swift
        }
  
        dlog(debugLogging, "LOGGING::UNHANDLED::%@/%@", event, sender as! NSObject)
-@@ -187,6 +164,7 @@
+@@ -187,6 +165,7 @@
        return false
      case .leftMouseDown, .leftMouseUp, .leftMouseDragged, .rightMouseDown, .rightMouseUp,
        .rightMouseDragged:
@@ -21616,7 +21784,7 @@ diff --git a/OSXCore/InputController.swift b/OSXCore/InputController.swift
        commitComposition(sender)
      default:
        dlog(debugSpying, "unhandled event: \(event)")
-@@ -195,6 +173,19 @@
+@@ -195,6 +174,19 @@
    }
  }
  
@@ -21636,13 +21804,14 @@ diff --git a/OSXCore/InputController.swift b/OSXCore/InputController.swift
  extension InputController {  // IMKStateSetting
    //! @brief  마우스 이벤트를 잡을 수 있게 한다.
    public override func recognizedEvents(_ sender: Any!) -> Int {
-@@ -211,14 +202,30 @@
+@@ -211,14 +203,32 @@
    public override func activateServer(_ sender: Any!) {
      dlog(true, "server activated")
      super.activateServer(sender)
 +    InputMethodServer.shared.hanjaPanel.hide()
 +    InputMethodServer.shared.activeController = self
 +    lastFlags = []
++    inputContextActive = true
 +    receiver.activateKoreanContext(asClient(sender))
    }
  
@@ -21654,6 +21823,7 @@ diff --git a/OSXCore/InputController.swift b/OSXCore/InputController.swift
 +  // Shared application cleanup. Only a controller initialized with a real
 +  // IMK connection may forward the lifecycle callback to IMKInputController.
 +  func deactivateInputContext(_ sender: Any!) {
++    inputContextActive = false
      dlog(true, "server deactivating")
      if responds(to: #selector(commitComposition(_:))) {
        self.commitComposition(sender)
@@ -21668,7 +21838,7 @@ diff --git a/OSXCore/InputController.swift b/OSXCore/InputController.swift
    }
  }
  
-@@ -229,6 +236,7 @@
+@@ -229,6 +239,7 @@
      continueTracking _: UnsafeMutablePointer<ObjCBool>!, client sender: Any
    ) -> Bool {
      dlog(debugLogging, "LOGGING::EVENT::MOUSEDOWN")
@@ -21676,7 +21846,7 @@ diff --git a/OSXCore/InputController.swift b/OSXCore/InputController.swift
      commitComposition(sender)
      return false
    }
-@@ -254,14 +262,14 @@
+@@ -254,14 +265,14 @@
      dlog(debugLogging, "LOGGING::EVENT::UPDATE-RAW?")
      dlog(debugInputController, "** InputController -updateComposition")
      receiver.updateCompositionEvent()
@@ -21693,7 +21863,7 @@ diff --git a/OSXCore/InputController.swift b/OSXCore/InputController.swift
    }
  
    // Getting Input Strings and Candidates
-@@ -292,6 +300,10 @@
+@@ -292,6 +303,10 @@
  
  #if DEBUG
    @objcMembers public class MockInputController: InputController {
@@ -21704,7 +21874,7 @@ diff --git a/OSXCore/InputController.swift b/OSXCore/InputController.swift
      override public init(server: IMKServer, delegate: Any!, client: Any) {
        super.init()
        receiver = InputReceiver(
-@@ -333,23 +345,6 @@
+@@ -333,23 +348,6 @@
        return result.processed
      }
  
@@ -21728,7 +21898,7 @@ diff --git a/OSXCore/InputController.swift b/OSXCore/InputController.swift
      // Committing a Composition
      // 조합을 중단하고 현재까지 조합된 글자를 커밋한다.
      @objc public override func commitComposition(_ sender: Any) {
-@@ -360,6 +355,7 @@
+@@ -360,6 +358,7 @@
  
      public override func updateComposition() {
        receiver.updateCompositionEvent()
@@ -21736,7 +21906,7 @@ diff --git a/OSXCore/InputController.swift b/OSXCore/InputController.swift
  
        let client = receiver.inputClient
        let composed = composedString(client) as! String
-@@ -372,6 +368,7 @@
+@@ -372,6 +371,7 @@
  
      public override func cancelComposition() {
        receiver.cancelCompositionEvent()
@@ -21747,7 +21917,7 @@ diff --git a/OSXCore/InputController.swift b/OSXCore/InputController.swift
 diff --git a/OSXCore/InputMethodServer.swift b/OSXCore/InputMethodServer.swift
 --- a/OSXCore/InputMethodServer.swift
 +++ b/OSXCore/InputMethodServer.swift
-@@ -158,19 +158,22 @@
+@@ -158,19 +158,23 @@
    let server: IMKServer
    //! @property
    let candidates: IMKCandidates
@@ -21772,13 +21942,14 @@ diff --git a/OSXCore/InputMethodServer.swift b/OSXCore/InputMethodServer.swift
 +    // Do not depend on DEBUG being propagated into the framework target.
 +    let environment = ProcessInfo.processInfo.environment
 +    if environment["HANJAIME_TEST_SESSION"] == "1"
-+      || environment["XCTestConfigurationFilePath"] != nil {
++      || environment["XCTestConfigurationFilePath"] != nil
++      || CommandLine.arguments.contains("--settings") {
 +      name += "_Test_" + UUID().uuidString
 +    }
  
      self.init(name: name)
    }
-@@ -180,9 +183,10 @@
+@@ -180,9 +184,10 @@
  
      server = IMKServer(name: name, bundleIdentifier: Bundle.main.bundleIdentifier)
      candidates = IMKCandidates(server: server, panelType: kIMKSingleColumnScrollingCandidatePanel)
@@ -21788,14 +21959,16 @@ diff --git a/OSXCore/InputMethodServer.swift b/OSXCore/InputMethodServer.swift
 +    candidates.setSelectionKeys([KeyCode.ansi1, .ansi2, .ansi3, .ansi4, .ansi5, .ansi6, .ansi7, .ansi8, .ansi9].map { NSNumber(value: $0.rawValue) })
 +
 +    // Normal input and system Caps Lock switching do not need global keyboard monitoring.
-+    io = Configuration.shared.rightToggleKey > 0 ? IOKitty() : nil
++    io = !CommandLine.arguments.contains("--settings") && Configuration.shared.rightToggleKey > 0 ? IOKitty() : nil
      dlog(debugInputServer, "\t%@", description)
    }
  
-@@ -193,13 +197,33 @@
+@@ -193,13 +198,35 @@
    }
  
    func showOrHideCandidates(controller: InputController) {
++    guard controller.inputContextActive else { return }
++    if let activeController, activeController !== controller { return }
 +    activeController = controller
      showOrHideCandidates(composer: controller.receiver.composer)
    }
@@ -21878,7 +22051,7 @@ diff --git a/OSXCore/InputReceiver.swift b/OSXCore/InputReceiver.swift
        return InputResult(processed: false, action: .commit)
      }
  
-@@ -54,6 +80,17 @@
+@@ -54,6 +80,19 @@
    }
  
    // MARK: InputTextDelegate 프로토콜 구현
@@ -21890,13 +22063,15 @@ diff --git a/OSXCore/InputReceiver.swift b/OSXCore/InputReceiver.swift
 +    commitCompositionEvent(inputClient)
 +    inputting = wasInputting
 +    composer.clear()
-+    InputMethodServer.shared.hanjaPanel.hide()
++    if InputMethodServer.shared.activeController === controller {
++      InputMethodServer.shared.hanjaPanel.hide()
++    }
 +    inputClient = sender
 +  }
  
    // IMKServerInput 프로토콜에 대한 공용 핸들러
    func input(
-@@ -62,6 +99,9 @@
+@@ -62,6 +101,9 @@
      modifiers flags: NSEvent.ModifierFlags,
      client sender: IMKTextInput & IMKUnicodeTextInput
    ) -> InputResult {
@@ -21906,7 +22081,7 @@ diff --git a/OSXCore/InputReceiver.swift b/OSXCore/InputReceiver.swift
      let selected = sender.selectedRange()
      let marked = sender.markedRange()
      if selected.location != marked.location {
-@@ -89,13 +129,15 @@
+@@ -89,13 +131,15 @@
      let hadComposedString = !_internalComposedString.isEmpty
      let result = input2(text: string, keyCode: keyCode, modifiers: flags, client: sender)
  
@@ -21926,7 +22101,7 @@ diff --git a/OSXCore/InputReceiver.swift b/OSXCore/InputReceiver.swift
      }
  
      let commited = commitCompositionEvent(sender)  // 조합 된 문자 반영
-@@ -110,8 +152,6 @@
+@@ -110,8 +154,6 @@
        updateComposition()  // 조합 중인 문자 반영
      }
  
@@ -21935,7 +22110,7 @@ diff --git a/OSXCore/InputReceiver.swift b/OSXCore/InputReceiver.swift
      dlog(debugInputReceiver, "*** End of Input handling ***")
      return result
    }
-@@ -119,16 +159,19 @@
+@@ -119,16 +161,19 @@
    func input(event: InputEvent, client sender: IMKTextInput & IMKUnicodeTextInput) -> InputResult {
      switch event {
      case .changeLayout(let layout, let processed):
@@ -21956,7 +22131,7 @@ diff --git a/OSXCore/InputReceiver.swift b/OSXCore/InputReceiver.swift
          if result.action != .cancel {
            commitCompositionEvent(sender)
            if case .layout(let mode) = result.action, layout != .toggleByCapsLock {
-@@ -139,6 +182,7 @@
+@@ -139,6 +184,7 @@
          }
        }
  
@@ -21964,7 +22139,7 @@ diff --git a/OSXCore/InputReceiver.swift b/OSXCore/InputReceiver.swift
        inputting = false
  
        return processed ? .processed : .notProcessed
-@@ -168,6 +212,7 @@
+@@ -168,6 +214,7 @@
    // 조합을 중단하고 현재까지 조합된 글자를 커밋한다.
    @discardableResult
    func commitCompositionEvent(_ sender: IMKTextInput & IMKUnicodeTextInput) -> Bool {
@@ -21972,7 +22147,7 @@ diff --git a/OSXCore/InputReceiver.swift b/OSXCore/InputReceiver.swift
      dlog(debugLogging, "LOGGING::EVENT::COMMIT")
      if !inputting {
        // 입력기 외부에서 들어오는 커밋 요청에 대해서는 편집 중인 글자도 커밋한다.
-@@ -189,14 +234,15 @@
+@@ -189,14 +236,15 @@
      dlog(
        debugInputReceiver, "** InputController -commitComposition: with sender: %@ / strings: %@",
        sender as! NSObject, commitString)
@@ -21990,7 +22165,7 @@ diff --git a/OSXCore/InputReceiver.swift b/OSXCore/InputReceiver.swift
  
      InputMethodServer.shared.showOrHideCandidates(controller: controller)
  
-@@ -206,6 +252,22 @@
+@@ -206,6 +254,22 @@
    func updateCompositionEvent() {
      dlog(debugLogging, "LOGGING::EVENT::UPDATE")
      dlog(debugInputController, "** InputController -updateComposition")
@@ -22013,7 +22188,7 @@ diff --git a/OSXCore/InputReceiver.swift b/OSXCore/InputReceiver.swift
    }
  
    func cancelCompositionEvent() {
-@@ -247,6 +309,10 @@
+@@ -247,6 +311,10 @@
    }
  
    func candidateSelectionChanged(_ candidateString: NSAttributedString) {
@@ -22024,7 +22199,7 @@ diff --git a/OSXCore/InputReceiver.swift b/OSXCore/InputReceiver.swift
      dlog(debugLogging, "LOGGING::CHECK::CANDIDATESELECTIONCHANGED::%@", candidateString)
      composer.candidateSelectionChanged(candidateString)
      updateComposition()
-@@ -266,13 +332,12 @@
+@@ -266,13 +334,12 @@
  
    //! @brief 자판 전환을 감지한다.
    func setValue(_ value: Any, forTag tag: Int, client sender: IMKTextInput & IMKUnicodeTextInput) {
@@ -22039,7 +22214,7 @@ diff --git a/OSXCore/InputReceiver.swift b/OSXCore/InputReceiver.swift
      switch tag {
      case kTextServiceInputModePropertyTag:
        guard let value = value as? String else {
-@@ -280,10 +345,14 @@
+@@ -280,10 +347,14 @@
          assertionFailure()
          break
        }

@@ -114,6 +114,22 @@ struct HanjaIMEDefinitionRequest: Equatable {
   }
 }
 
+public enum HanjaIMEDictionaryPriority: String, CaseIterable {
+  case appleThenNaver
+  case naverFirst
+  case appleOnly
+
+  public static let key = "HanjaIME.DictionaryPriority"
+
+  public static var current: HanjaIMEDictionaryPriority {
+    let raw = UserDefaults(suiteName: HanjaIMEStorage.preferencesDomain)?.string(forKey: key)
+    return raw.flatMap(HanjaIMEDictionaryPriority.init(rawValue:)) ?? .appleThenNaver
+  }
+
+  public var usesApple: Bool { self != .naverFirst }
+  public var usesNaver: Bool { self != .appleOnly }
+}
+
 enum HanjaIMEDictionaryLink {
   static func naver(_ request: HanjaIMEDefinitionRequest) -> URL? {
     let host = request.prefersJapaneseDictionary ? "ja.dict.naver.com" : "hanja.dict.naver.com"
@@ -714,6 +730,8 @@ final class HanjaIMESession {
     selectionEngaged = false
     candidates = layoutCandidates.filter(category.accepts)
   }
+  // Optional observer: the keyboard session remains functional with no agent or callback.
+  var onCandidateAccepted: ((String, String) -> Void)?
   var automaticCandidates = true
   var reading: String { buffered + hangul.composedString }
   // Punctuation and spaces stay inside the marked-text session.  Conversion
@@ -841,11 +859,13 @@ final class HanjaIMESession {
     guard expected == nil || expected == generation, !candidateReading.isEmpty, reading.hasSuffix(candidateReading),
       candidates.indices.contains(index) else { return false }
     let candidate = candidates[index]
+    let acceptedReading = candidateReading
     usage.record(reading: candidate.sourceReading ?? candidateReading, value: candidate.sourceValue ?? candidate.value)
     commitString += String(reading.dropLast(candidateReading.count)) + candidate.value
     buffered = ""
     hangul.clearCompositionContext()
     invalidateCandidates()
+    if candidate.kind == .hanja || candidate.kind == .japanese { onCandidateAccepted?(acceptedReading, candidate.value) }
     return true
   }
 
@@ -858,11 +878,13 @@ final class HanjaIMESession {
   private func acceptSelectionInline() {
     guard selectionEngaged, candidates.indices.contains(selectedIndex), !candidateReading.isEmpty else { return }
     let candidate = candidates[selectedIndex]
+    let acceptedReading = candidateReading
     usage.record(reading: candidate.sourceReading ?? candidateReading, value: candidate.sourceValue ?? candidate.value)
     let replacement = String(reading.dropLast(candidateReading.count)) + candidate.value
     hangul.clearCompositionContext()
     buffered = replacement
     invalidateCandidates()
+    if candidate.kind == .hanja || candidate.kind == .japanese { onCandidateAccepted?(acceptedReading, candidate.value) }
   }
 
   private func appendLiteral(_ text: String) {
@@ -12054,3 +12076,44 @@ enum HanjaIMEEmojiLexicon {
 힙합	🤘	뿔 모양 손짓
 """#
 }
+
+#if os(macOS)
+/// Nonblocking, coalesced, opt-in notification. This bridge cannot control composition.
+enum HanjaIMENotchBridge {
+  private static let queue = DispatchQueue(label: "org.hanjaime.keyboard.notch", qos: .utility)
+  private static let lock = NSLock()
+  private static var pending: (String, String, Double)?
+  private static var scheduled = false
+  static func candidateSelected(reading: String, candidate: String) {
+    guard !reading.isEmpty, !candidate.isEmpty, reading.count <= 64, candidate.count <= 64,
+      reading.utf8.count <= 512, candidate.utf8.count <= 512,
+      reading.unicodeScalars.allSatisfy({ (0xAC00...0xD7A3).contains($0.value) }),
+      !candidate.unicodeScalars.contains(where: { CharacterSet.controlCharacters.contains($0) }) else { return }
+    lock.lock()
+    pending = (reading, candidate, Date().timeIntervalSince1970)
+    let shouldSchedule = !scheduled
+    scheduled = true
+    lock.unlock()
+    if shouldSchedule { queue.async { drain() } }
+  }
+  private static func drain() {
+    lock.lock(); let event = pending; pending = nil; lock.unlock()
+    if let (reading, candidate, timestamp) = event,
+       Date().timeIntervalSince1970 - timestamp <= 3 {
+      let preferences = UserDefaults(suiteName: "org.hanjaime.notch.preferences")
+      preferences?.synchronize()
+      if preferences?.bool(forKey: "Integrations.ShowHanjaIMEActivity.v2") == true {
+        DistributedNotificationCenter.default().postNotificationName(
+          Notification.Name("org.hanjaime.notch.candidateSelected.v1"), object: nil,
+          userInfo: ["version": 1, "reading": reading, "candidate": candidate, "timestamp": timestamp],
+          deliverImmediately: true)
+      }
+    }
+    lock.lock()
+    let again = pending != nil
+    if !again { scheduled = false }
+    lock.unlock()
+    if again { queue.async { drain() } }
+  }
+}
+#endif

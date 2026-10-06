@@ -1,6 +1,6 @@
 {
   "base_commit": "5bdc5dc3df93d5a3aa61ad1df928d76bc903054b",
-  "patch_sha256": "ef6b3d3c1dadd450ff99a1ce8bf731b3993a5a47a03f44e6baae60f8ce72098f",
+  "patch_sha256": "177f311250a3fb2b425bca44a8480f17c244108723d08017c98832a1a00108a6",
   "files": [
     {
       "path": "Gureum.xcodeproj/project.pbxproj",
@@ -20,7 +20,7 @@
     {
       "path": "GureumTests/HanjaIMEIntegrationTests.swift",
       "before": null,
-      "after": "cc920b5278c0e42164d60c2719d61423030a2b9b74b30c6f834df92d2cf66f3c"
+      "after": "eb5ebfdfafbb178fe2d675ff6da62be4b510f63eb20574028ed85dcb7fd9d88a"
     },
     {
       "path": "GureumTests/MockInputClient.h",
@@ -165,12 +165,12 @@
     {
       "path": "OSX/ConfigurationWindow.swift",
       "before": "0892555445b0dc49aec7c042a01a23ff4439a0c2301db9d9dbee512efd61f250",
-      "after": "12f1fb01aeb651ddaa832e87ea3f5d5cad08136383e8390c9157c9fe33c15f4f"
+      "after": "8e133fb9bafe02aeac4de16f00eadd6d67cc309f98244f58c7cafba39868fda0"
     },
     {
       "path": "OSX/GureumAppDelegate.swift",
       "before": "ab64b55ff11747cab5c5d4262705bed2fab69fa2fd26bbe0781986e1d09b50c3",
-      "after": "feb54d45583a24028b0f2cc50c3901d48f2a150144000dcbea538373521197c1"
+      "after": "16629c8997496efeaa6a26b1667ad8b08eecfcfee080dacacdf384459473ba24"
     },
     {
       "path": "OSX/GureumMenu.swift",
@@ -220,7 +220,7 @@
     {
       "path": "OSX/Info.plist",
       "before": "792ac12d2658fecb3ce5b835fb03699c238372a397ed662d1a3249a72a03dd6e",
-      "after": "bb61ed8a1e8444e3ad45f0c8bf6dc40b23fbe082c726e8fc613b586d003e242c"
+      "after": "4c83742879aa4e3e22d9abceb72166b216da2522ae3c4e8bcff1ebd2a2c2b4af"
     },
     {
       "path": "OSX/MainMenu.xib",
@@ -248,6 +248,11 @@
       "after": "bebaeadaeec33d7f2bb491f3122a461bdd70c980fed2cc5b77ec167a180dbb1f"
     },
     {
+      "path": "OSX/main.swift",
+      "before": "8618868abeb2df31e32dc78a3b8e7a9a61ce1b7956ba1e3567b9a84d6a886a9d",
+      "after": "15bff53f18dee7144b02b1696611299079c2c7b8b861131bf7203b2c8bcb0714"
+    },
+    {
       "path": "OSXCore/Configuration.swift",
       "before": "3863f6ec189330a7ac074fb588e7033d944c38af309e18e34c91723f28296b9d",
       "after": "d386f9c376b7d9c69d5cc780a9a1595192f1e2d6ff345c445273533a9a697f00"
@@ -270,17 +275,17 @@
     {
       "path": "OSXCore/HanjaIMECandidatePanel.swift",
       "before": null,
-      "after": "1270dc17a44d1d5446f46c7706e16a64c9891cf5e3fc32e37328c0737078d816"
+      "after": "508d6774488036fabf085dfb697b1dad12520714bd13aff8439a2048b57f74c7"
     },
     {
       "path": "OSXCore/HanjaIMEComposer.swift",
       "before": null,
-      "after": "5ce2604a4d2806401328f8bc4d6e869bfee7d7121e727d6b5543d171d4064ca8"
+      "after": "38e4906bc0c07f26f24389b65377e8d8d97e5ae3e81aeb8ac91e8646e62efd80"
     },
     {
       "path": "OSXCore/HanjaIMECore.swift",
       "before": null,
-      "after": "6107d6a81d74acb60256352ac2ad3b4515d3a96a9f6e152be7235552991da708"
+      "after": "7125a3f41935010f0c86568ad8023431443744c539338e2ca427918ead4ea816"
     },
     {
       "path": "OSXCore/HanjaIMEStorage.swift",
@@ -290,17 +295,17 @@
     {
       "path": "OSXCore/InputController.swift",
       "before": "0c27bc08d1aa689136dc68321921bf43a0ee7318821325d6cd91fa70e2fd9d43",
-      "after": "cdb83301fb8cf400e2d04edd963e3da73ef5e0061dc3ad5e51f1a4938e06ff50"
+      "after": "2b01aef446701ddce062e152e100bee40a52082daecd421b2a91ac5bd356120e"
     },
     {
       "path": "OSXCore/InputMethodServer.swift",
       "before": "c446f81af0408d6e8ef281a87317e6d2f022ccf5b7a354d9239d13654f4acef4",
-      "after": "b4b1be4f0c5516b54cd54c99b36aabfda8cb0df82d39c6a7464c42d4769f1def"
+      "after": "17e7824e24d4710163ab5abbcf65de0c8b212219364f29a8c387cf2d3b2ad3de"
     },
     {
       "path": "OSXCore/InputReceiver.swift",
       "before": "ba4f4c766be22341517acabe5db259d07a42775094e80b8c57484b54a7e0cd15",
-      "after": "b62d20096d86c5d6cb7e1785bf6961ba0e052c50f6e90c222e49a20670b24f01"
+      "after": "2b70f8d5b5ce6004e2b882bbb55133c8fc6f00fa623dc298c022e1c23c8325e1"
     },
     {
       "path": "OSXCore/SearchComposer.swift",

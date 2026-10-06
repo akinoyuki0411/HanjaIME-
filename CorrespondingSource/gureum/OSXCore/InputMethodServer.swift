@@ -171,7 +171,8 @@ public class InputMethodServer {
     // Do not depend on DEBUG being propagated into the framework target.
     let environment = ProcessInfo.processInfo.environment
     if environment["HANJAIME_TEST_SESSION"] == "1"
-      || environment["XCTestConfigurationFilePath"] != nil {
+      || environment["XCTestConfigurationFilePath"] != nil
+      || CommandLine.arguments.contains("--settings") {
       name += "_Test_" + UUID().uuidString
     }
 
@@ -186,7 +187,7 @@ public class InputMethodServer {
     candidates.setSelectionKeys([KeyCode.ansi1, .ansi2, .ansi3, .ansi4, .ansi5, .ansi6, .ansi7, .ansi8, .ansi9].map { NSNumber(value: $0.rawValue) })
 
     // Normal input and system Caps Lock switching do not need global keyboard monitoring.
-    io = Configuration.shared.rightToggleKey > 0 ? IOKitty() : nil
+    io = !CommandLine.arguments.contains("--settings") && Configuration.shared.rightToggleKey > 0 ? IOKitty() : nil
     dlog(debugInputServer, "\t%@", description)
   }
 
@@ -197,6 +198,8 @@ public class InputMethodServer {
   }
 
   func showOrHideCandidates(controller: InputController) {
+    guard controller.inputContextActive else { return }
+    if let activeController, activeController !== controller { return }
     activeController = controller
     showOrHideCandidates(composer: controller.receiver.composer)
   }

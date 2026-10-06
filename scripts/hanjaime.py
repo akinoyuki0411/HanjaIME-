@@ -18,7 +18,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from validate_input_modes import validate_app
 import input_source_migration as migration
 
-VERSION = "0.9.4"
+VERSION = "0.9.8"
 ROOT = Path(__file__).resolve().parent.parent
 PIN = "5bdc5dc3df93d5a3aa61ad1df928d76bc903054b"
 BUNDLE_ID = "org.hanjaime.inputmethod.HanjaIME"
